@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Portifolio</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+</head>
+<body>
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th scope="col">Ticker</th>
+                    <th scope="col">Preco Medio</th>
+                    <th scope="col">Quantidade</th>
+                    <th scope="col">Total</th>
+                    <th scope="col"></th>
+                    <th scope="col"></th>
+                </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="transacao : ${transacaoList}">
+                        <td class="col-4" th:text="${transacao.ticker}">TICKER</td>
+                        <td class="col-2" th:text="${transacao.preco}">PRECO MEDIO</td>
+                        <td class="col-2" th:text="${transacao.quantidade}">QUANTIDADE</td>
+                        <td class="col-2" th:text="${transacao.total}">TOTAL</td>
+                        <td class="col-1"><a href="/acao/vender">Vender</a></td>
+                        <td class="col-1"><a href="/acao/detalhes">Detalhes</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <a href="/acao">Pesquisar Acao</a>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+</body>
+</html>
