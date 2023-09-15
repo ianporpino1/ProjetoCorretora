@@ -111,21 +111,23 @@ public class AcaoController {
     public String callAcaoApi(String ticker,Model model) throws JsonProcessingException {
         RestTemplate restTemplate = new RestTemplate();
 
-        String response = restTemplate.getForObject("https://brapi.dev/api/quote/"  +ticker + "?token=5wMmBsVdAuX3LXQ1NJvqoH", String.class);
+        try{
+            String response = restTemplate.getForObject("https://brapi.dev/api/quote/"  +ticker + "?token=5wMmBsVdAuX3LXQ1NJvqoH", String.class);
+            ObjectMapper om = new ObjectMapper();
+            Root root = om.readValue(response, Root.class);
 
-        ObjectMapper om = new ObjectMapper();
-        Root root = om.readValue(response, Root.class);
+            result = root.results.get(0);
 
+            model.addAttribute("symbol",result.symbol);
+            model.addAttribute("price",result.regularMarketPrice);
 
+            System.out.println(result.symbol);
 
-        result = root.results.get(0);
+            return "comprarAcao";
+        }catch(HttpClientErrorException he){
+            return "error/acaoNaoEncontradaError";
+        }
 
-        model.addAttribute("symbol",result.symbol);
-        model.addAttribute("price",result.regularMarketPrice);
-
-        System.out.println(result.symbol);
-
-        return "comprarAcao";
     }
 
 
@@ -139,6 +141,7 @@ public class AcaoController {
 
         return "error/validationError";
     }
+
 
 
 
