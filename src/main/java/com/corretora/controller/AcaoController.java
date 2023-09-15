@@ -4,6 +4,7 @@ import com.corretora.dto.AcaoDTO;
 import com.corretora.dto.Result;
 
 import com.corretora.dto.Root;
+import com.corretora.model.TipoTransacao;
 import com.corretora.model.Transacao;
 import com.corretora.service.TransacaoService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -19,18 +20,17 @@ import org.springframework.web.client.RestTemplate;
 @Controller
 public class AcaoController {
 
-
     @Autowired
     private TransacaoService transacaoService;
     private Result result;
 
-    @GetMapping("/acao")
+    @GetMapping("acao/comprar")
     public String acaoForm(Model model) {
-        model.addAttribute("acao");
-        return "acaoForm";
+        //model.addAttribute("acao");
+        return "formComprarAcao";
     }
 
-    @PostMapping("/acao")
+    @PostMapping("acao/comprar")
     public String pesquisaAcao(@RequestParam String ticker, Model model) throws JsonProcessingException {
         model.addAttribute("ticker",ticker);
         String responseAPI = callAcaoApi(ticker,model);
@@ -41,19 +41,52 @@ public class AcaoController {
     @PostMapping("/saveAcao")
     public String saveAcao(Model model, @RequestParam("quantidade") String quantidade){
         model.addAttribute("quantidade", quantidade);
-        AcaoDTO acaoDTO = new AcaoDTO();
-        //n eh p ser feito aqui, service provavelmente
-        acaoDTO.setPreco(result.regularMarketPrice);
-        acaoDTO.setTicker(result.symbol);
-        acaoDTO.setQuantidade(Integer.parseInt(quantidade));
+        //TODO excecao se quantidade for vazia
 
-        Transacao transacao = acaoDTO.toTransacao();
+        //AcaoDTO acaoDTO = new AcaoDTO();
+        //n eh p ser feito aqui, service provavelmente
+        //acaoDTO.setPreco(result.regularMarketPrice);
+        //acaoDTO.setTicker(result.symbol);
+       // acaoDTO.setQuantidade(Integer.parseInt(quantidade));
+
+        //Transacao transacao = acaoDTO.toTransacao();
+        Transacao transacao = this.transacaoService.setTransacao(result,quantidade, TipoTransacao.COMPRA);
 
         this.transacaoService.saveTransacao(transacao);
 
 
         return "redirect:/portifolio";
     }
+
+
+    @GetMapping("acao/vender")
+    public String pesquisaVenderAcao(Model model){
+        return "formVenderAcao";
+    }
+
+
+    @PostMapping("acao/vender")
+    public String getAcao(Model model, @RequestParam("ticker") String ticker) throws JsonProcessingException {
+        model.addAttribute("ticker",ticker);
+        String responseAPI = callAcaoApi(ticker,model);
+
+        return "venderAcao";
+    }
+
+    @PostMapping("acao/acaoVender")
+    public String vender(Model model, @RequestParam("quantidade") String quantidade){
+        model.addAttribute("quantidade", quantidade);
+
+        Transacao transacao = this.transacaoService.setTransacao(result,quantidade, TipoTransacao.VENDA);
+
+        this.transacaoService.saveTransacao(transacao);
+
+        return "redirect:/portifolio";
+    }
+
+
+
+
 
 
     public String callAcaoApi(String ticker,Model model) throws JsonProcessingException {
@@ -64,7 +97,7 @@ public class AcaoController {
         ObjectMapper om = new ObjectMapper();
         Root root = om.readValue(response, Root.class);
 
-
+        //TODO handle exception se ticker for vazio
 
         result = root.results.get(0);
         if(result.regularMarketPrice == 0){

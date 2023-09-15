@@ -1,7 +1,10 @@
 package com.corretora.service;
 
 import com.corretora.dao.TransacaoRepository;
+import com.corretora.dto.Result;
 import com.corretora.dto.TransacaoResumo;
+import com.corretora.model.Acao;
+import com.corretora.model.TipoTransacao;
 import com.corretora.model.Transacao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -44,6 +47,22 @@ public class TransacaoService {
     public void saveTransacao(Transacao transacao){
 
         transacaoRepository.save(transacao);
+    }
+
+    public Transacao setTransacao(Result result, String quantidade, TipoTransacao tipoTransacao){
+        Transacao transacao = new Transacao();
+        int intQuantidade = Integer.parseInt(quantidade);
+        Acao acao = new Acao(result.symbol,result.regularMarketPrice);
+        transacao.setAcao(acao);
+        transacao.setTipoTransacao(tipoTransacao);
+        if(tipoTransacao.equals(tipoTransacao.VENDA)){
+            intQuantidade = -intQuantidade;
+        }
+
+        transacao.setQuantidade(intQuantidade);
+        transacao.setTotal();
+
+        return transacao;
     }
 
 }

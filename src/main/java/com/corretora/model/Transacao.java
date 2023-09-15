@@ -17,7 +17,7 @@ public class Transacao implements Serializable {
 
     private int quantidade;
     private double total;
-    private String descricao; //OU TIPO: COMPRA OU VENDA
+    private TipoTransacao tipoTransacao;
 
     private Date dataHora; //data da transacao
 
@@ -50,12 +50,12 @@ public class Transacao implements Serializable {
         this.quantidade = quantidade;
     }
 
-    public String getDescricao() {
-        return descricao;
+    public TipoTransacao getTipoTransacao() {
+        return tipoTransacao;
     }
 
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
+    public void setTipoTransacao(TipoTransacao tipoTransacao) {
+        this.tipoTransacao = tipoTransacao;
     }
 
     public Long getId() {
