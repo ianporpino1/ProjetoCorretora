@@ -65,4 +65,8 @@ public class TransacaoService {
         return transacao;
     }
 
+    public List<String> getTickers(){
+        return this.transacaoRepository.getTickers();
+    }
+
 }

@@ -9,15 +9,28 @@ import com.corretora.model.Transacao;
 import com.corretora.service.TransacaoService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.ValidationException;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import org.antlr.v4.runtime.misc.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Controller
+@Validated
 public class AcaoController {
 
     @Autowired
@@ -31,15 +44,18 @@ public class AcaoController {
     }
 
     @PostMapping("acao/comprar")
-    public String pesquisaAcao(@RequestParam String ticker, Model model) throws JsonProcessingException {
+    public String pesquisaAcao(Model model,@RequestParam @NotBlank(message = "TICKER OBRIGATORIO") String ticker) throws JsonProcessingException, ValidationException {
+
         model.addAttribute("ticker",ticker);
         String responseAPI = callAcaoApi(ticker,model);
 
         return responseAPI;
+
+
     }
 
     @PostMapping("/saveAcao")
-    public String saveAcao(Model model, @RequestParam("quantidade") String quantidade){
+    public String saveAcao(Model model, @RequestParam @Min(1) @NotBlank(message = "QUANTIDADE OBRIGATORIA OU MAIOR QUE 0") String quantidade) throws ValidationException{
         model.addAttribute("quantidade", quantidade);
         //TODO excecao se quantidade for vazia
 
@@ -61,12 +77,15 @@ public class AcaoController {
 
     @GetMapping("acao/vender")
     public String pesquisaVenderAcao(Model model){
+        List<String> tickers =  transacaoService.getTickers();
+        model.addAttribute("tickers",tickers);
+
         return "formVenderAcao";
     }
 
 
     @PostMapping("acao/vender")
-    public String getAcao(Model model, @RequestParam("ticker") String ticker) throws JsonProcessingException {
+    public String getAcao(Model model, @RequestParam String ticker) throws JsonProcessingException {
         model.addAttribute("ticker",ticker);
         String responseAPI = callAcaoApi(ticker,model);
 
@@ -74,7 +93,7 @@ public class AcaoController {
     }
 
     @PostMapping("acao/acaoVender")
-    public String vender(Model model, @RequestParam("quantidade") String quantidade){
+    public String vender(Model model, @RequestParam @Min(value = 1,message = "QUANTIDADE MAIOR QUE 0") @NotBlank(message = "QUANTIDADE OBRIGATORIA")String quantidade) throws ValidationException{
         model.addAttribute("quantidade", quantidade);
 
         Transacao transacao = this.transacaoService.setTransacao(result,quantidade, TipoTransacao.VENDA);
@@ -97,20 +116,31 @@ public class AcaoController {
         ObjectMapper om = new ObjectMapper();
         Root root = om.readValue(response, Root.class);
 
-        //TODO handle exception se ticker for vazio
+
 
         result = root.results.get(0);
-        if(result.regularMarketPrice == 0){
-            return "Acao invalida";
-        }
-        else{
-            model.addAttribute("symbol",result.symbol);
-            model.addAttribute("price",result.regularMarketPrice);
-            System.out.println(result.symbol);
-            return "comprarAcao";
-        }
 
+        model.addAttribute("symbol",result.symbol);
+        model.addAttribute("price",result.regularMarketPrice);
+
+        System.out.println(result.symbol);
+
+        return "comprarAcao";
     }
+
+
+
+    @ExceptionHandler(ValidationException.class)
+    public String ValidationErrorHandler(ValidationException ve,Model model) {
+        String errorMessage = ve.getMessage();
+
+        model.addAttribute("errorMessage", errorMessage);
+        System.out.println(ve.getMessage());
+
+        return "error/validationError";
+    }
+
+
 
 
 

@@ -8,10 +8,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import com.corretora.service.TransacaoService;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 
 @Controller
+
 public class PortifolioController {
 
     @Autowired
@@ -25,7 +27,12 @@ public class PortifolioController {
 
         model.addAttribute("transacaoList", transacaoList);
 
-        return  "portifolio";
+        return "portifolio";
+    }
+
+    @GetMapping("")
+    public String index(){
+        return "redirect:/portifolio";
     }
 
 }

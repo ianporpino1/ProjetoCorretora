@@ -16,4 +16,7 @@ public interface TransacaoRepository extends JpaRepository<Transacao, Long> {
 
     @Query(value = "SELECT ticker, SUM(quantidade), TRUNCATE(AVG(preco),2), TRUNCATE(SUM(total),2) FROM corretoradb.transacao GROUP BY ticker",nativeQuery = true)
     List<Object[]> calcularResumoTransacoes();
+
+    @Query(value = "SELECT distinct ticker FROM corretoradb.transacao",nativeQuery = true)
+    List<String> getTickers();
 }
