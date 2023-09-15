@@ -1,10 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>ERRO</title>
-</head>
+<head th:replace="~{fragmentos :: head('Erro')}"></head>
 <body>
   <p th:text="${errorMessage}"></p>
   <a href="/portifolio">Portifolio</a>
