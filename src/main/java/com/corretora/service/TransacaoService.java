@@ -20,6 +20,7 @@ public class TransacaoService {
     private TransacaoRepository transacaoRepository;
 
     public List<Transacao> findAllTransacao(){
+
         return (List<Transacao>) transacaoRepository.findAll();
     }
 

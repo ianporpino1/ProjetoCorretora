@@ -3,7 +3,7 @@
 <head th:replace="~{fragmentos :: head('Comprar')}"></head>
 <body>
 <h2>Informacoes da Acao</h2>
-<form th:action="@{/saveAcao}" method="post">
+<form th:action="@{/acaoComprar}" method="post">
 <table>
     <tr>
         <td>Ticker :</td>
@@ -21,7 +21,7 @@
     </tr>
 </table>
 </form>
-    <a href="/acao">Pesquise outra acao</a>
+    <a href="/acao/comprar">Pesquise outra acao</a>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
 </body>
 </html>

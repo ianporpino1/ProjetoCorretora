@@ -38,13 +38,13 @@ public class AcaoController {
     private Result result;
 
     @GetMapping("acao/comprar")
-    public String acaoForm(Model model) {
-        //model.addAttribute("acao");
+    public String pesquisaComprarAcao(Model model) {
+        model.addAttribute("acao");
         return "formComprarAcao";
     }
 
     @PostMapping("acao/comprar")
-    public String pesquisaAcao(Model model,@RequestParam @NotBlank(message = "TICKER OBRIGATORIO") String ticker) throws JsonProcessingException, ValidationException {
+    public String getComprarAcao(Model model,@RequestParam @NotBlank(message = "TICKER OBRIGATORIO") String ticker) throws JsonProcessingException, ValidationException {
 
         model.addAttribute("ticker",ticker);
         String responseAPI = callAcaoApi(ticker,model);
@@ -54,18 +54,10 @@ public class AcaoController {
 
     }
 
-    @PostMapping("/saveAcao")
-    public String saveAcao(Model model, @RequestParam @Min(1) @NotBlank(message = "QUANTIDADE OBRIGATORIA OU MAIOR QUE 0") String quantidade) throws ValidationException{
+    @PostMapping("/acaoComprar")
+    public String comprar(Model model, @RequestParam @Min(1) @NotBlank(message = "QUANTIDADE OBRIGATORIA OU MAIOR QUE 0") String quantidade) throws ValidationException{
         model.addAttribute("quantidade", quantidade);
-        //TODO excecao se quantidade for vazia
 
-        //AcaoDTO acaoDTO = new AcaoDTO();
-        //n eh p ser feito aqui, service provavelmente
-        //acaoDTO.setPreco(result.regularMarketPrice);
-        //acaoDTO.setTicker(result.symbol);
-       // acaoDTO.setQuantidade(Integer.parseInt(quantidade));
-
-        //Transacao transacao = acaoDTO.toTransacao();
         Transacao transacao = this.transacaoService.setTransacao(result,quantidade, TipoTransacao.COMPRA);
 
         this.transacaoService.saveTransacao(transacao);
@@ -85,7 +77,7 @@ public class AcaoController {
 
 
     @PostMapping("acao/vender")
-    public String getAcao(Model model, @RequestParam String ticker) throws JsonProcessingException {
+    public String getVenderAcao(Model model, @RequestParam String ticker) throws JsonProcessingException {
         model.addAttribute("ticker",ticker);
         String responseAPI = callAcaoApi(ticker,model);
 
@@ -108,7 +100,7 @@ public class AcaoController {
 
 
 
-    public String callAcaoApi(String ticker,Model model) throws JsonProcessingException {
+    public String callAcaoApi(String ticker,Model model) throws JsonProcessingException, HttpClientErrorException {
         RestTemplate restTemplate = new RestTemplate();
 
         try{
