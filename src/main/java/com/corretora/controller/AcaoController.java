@@ -58,9 +58,7 @@ public class AcaoController {
     public String comprar(Model model, @RequestParam @Min(1) @NotBlank(message = "QUANTIDADE OBRIGATORIA OU MAIOR QUE 0") String quantidade) throws ValidationException{
         model.addAttribute("quantidade", quantidade);
 
-        Transacao transacao = this.transacaoService.setTransacao(result,quantidade, TipoTransacao.COMPRA);
-
-        this.transacaoService.saveTransacao(transacao);
+        this.transacaoService.setTransacao(result,quantidade, TipoTransacao.COMPRA);
 
 
         return "redirect:/portifolio";
@@ -69,7 +67,7 @@ public class AcaoController {
 
     @GetMapping("acao/vender")
     public String pesquisaVenderAcao(Model model){
-        List<String> tickers =  transacaoService.getTickers();
+        List<String> tickers =  transacaoService.getTickersTransacao(); //deprecated
         model.addAttribute("tickers",tickers);
 
         return "formVenderAcao";
@@ -88,9 +86,7 @@ public class AcaoController {
     public String vender(Model model, @RequestParam @Min(value = 1,message = "QUANTIDADE MAIOR QUE 0") @NotBlank(message = "QUANTIDADE OBRIGATORIA")String quantidade) throws ValidationException{
         model.addAttribute("quantidade", quantidade);
 
-        Transacao transacao = this.transacaoService.setTransacao(result,quantidade, TipoTransacao.VENDA);
-
-        this.transacaoService.saveTransacao(transacao);
+        this.transacaoService.setTransacao(result,quantidade, TipoTransacao.VENDA);
 
         return "redirect:/portifolio";
     }

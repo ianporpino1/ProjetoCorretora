@@ -1,8 +1,11 @@
 package com.corretora.controller;
 
 import com.corretora.dto.AcaoDTO;
+import com.corretora.dto.PosicaoDTO;
 import com.corretora.dto.TransacaoResumo;
+import com.corretora.model.Posicao;
 import com.corretora.model.Transacao;
+import com.corretora.service.PosicaoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,15 +20,19 @@ import java.util.List;
 public class PortifolioController {
 
     @Autowired
-    private TransacaoService transacaoService; //talvez usar sevice e no service q faria essa busca
+    private TransacaoService transacaoService; //talvez usar sevice e no service q faria essa busca(DEPRECATED)
+
+    @Autowired
+    private PosicaoService posicaoService;
 
     @GetMapping("/portifolio")
     public String showPortifolio(Model model){
         //recebe list de acoes
-        List<TransacaoResumo> transacaoList =  this.transacaoService.calcularResumoAcoes();
+        //List<TransacaoResumo> transacaoList =  this.transacaoService.calcularResumoAcoes();
 
+       List<PosicaoDTO> posicoesList  = posicaoService.findAllFormatted();
 
-        model.addAttribute("transacaoList", transacaoList);
+        model.addAttribute("posicoesList", posicoesList);
 
         return "portifolio";
     }

@@ -6,7 +6,7 @@ import jakarta.persistence.Embeddable;
 
 import java.io.Serializable;
 
-public class AcaoDTO implements Serializable{
+public class AcaoDTO implements Serializable{ //INUTILIZADO
     private String ticker;
     private double preco;
 
@@ -52,7 +52,7 @@ public class AcaoDTO implements Serializable{
 
         transacao.setQuantidade(this.getQuantidade());
 
-        transacao.setTotal();
+
         return transacao;
     }
 

@@ -18,11 +18,11 @@
                 </tr>
                 </thead>
                 <tbody>
-                    <tr th:each="transacao : ${transacaoList}">
-                        <td class="col-4" th:text="${transacao.ticker}">TICKER</td>
-                        <td class="col-2" th:text="${transacao.preco}">PRECO MEDIO</td>
-                        <td class="col-2" th:text="${transacao.quantidade}">QUANTIDADE</td>
-                        <td class="col-2" th:text="${transacao.total}">TOTAL</td>
+                    <tr th:each="posicao : ${posicoesList}">
+                        <td class="col-4" th:text="${posicao.ticker}">TICKER</td>
+                        <td class="col-2" th:text="${posicao.precoMedio}">PRECO MEDIO</td>
+                        <td class="col-2" th:text="${posicao.quantidadeTotal}">QUANTIDADE</td>
+                        <td class="col-2" th:text="${posicao.valorTotal}">TOTAL</td>
                         <td class="col-1"><a href="/acao/vender">Vender</a></td>
                         <td class="col-1"><a href="/acao/detalhes">Detalhes</a></td>
                     </tr>

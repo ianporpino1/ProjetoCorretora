@@ -7,18 +7,18 @@ import jakarta.persistence.Embeddable;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-public class TransacaoResumo {
+public class TransacaoResumo { //SOON TO BE DEPRECATED(TALVEZ N, USAR PARA FORMAR HISTORICO)
     private String ticker;
     private double preco;
 
-    private double total;
+    private double totalTransacao;
     private BigDecimal quantidade;
 
     public TransacaoResumo(String ticker, BigDecimal quantidade, double preco, double total) {
         this.ticker = ticker;
         this.preco = preco;
         this.quantidade = quantidade;
-        this.total = total;
+        this.totalTransacao = total;
     }
 
     public TransacaoResumo() {
@@ -50,11 +50,11 @@ public class TransacaoResumo {
 
 
     public double getTotal() {
-        return total;
+        return totalTransacao;
     }
 
     public void setTotal(double total) {
-        this.total = total;
+        this.totalTransacao = total;
     }
 
 }

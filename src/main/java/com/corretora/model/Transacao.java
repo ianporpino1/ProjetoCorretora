@@ -16,7 +16,8 @@ public class Transacao implements Serializable {
     private Acao acao;
 
     private int quantidade;
-    private double total;
+
+    private double totalTransacao;
     private TipoTransacao tipoTransacao;
 
     private Date dataHora; //data da transacao
@@ -35,11 +36,11 @@ public class Transacao implements Serializable {
     }
 
     public double getTotal() {
-        return total;
+        return totalTransacao;
     }
 
-    public void setTotal() {
-        this.total = quantidade * acao.getPreco();
+    public void setTotalTransacao() {
+        this.totalTransacao = quantidade * acao.getPreco();
     }
 
     public int getQuantidade() {

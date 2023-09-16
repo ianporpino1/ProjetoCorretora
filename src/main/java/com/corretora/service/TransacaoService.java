@@ -4,8 +4,10 @@ import com.corretora.dao.TransacaoRepository;
 import com.corretora.dto.Result;
 import com.corretora.dto.TransacaoResumo;
 import com.corretora.model.Acao;
+import com.corretora.model.Posicao;
 import com.corretora.model.TipoTransacao;
 import com.corretora.model.Transacao;
+import jakarta.validation.constraints.Null;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,19 +21,22 @@ public class TransacaoService {
     @Autowired
     private TransacaoRepository transacaoRepository;
 
+    @Autowired
+    private  PosicaoService posicaoService;
+
     public List<Transacao> findAllTransacao(){
 
         return (List<Transacao>) transacaoRepository.findAll();
     }
 
-    public List<TransacaoResumo> calcularResumoAcoes(){
+    public List<TransacaoResumo> calcularResumoAcoes(){   //DEPRECATED
         List<Object[]> resultados = transacaoRepository.calcularResumoTransacoes();
         List<TransacaoResumo> resumos = createResumo(resultados);
 
         return resumos;
     }
 
-    public List<TransacaoResumo> createResumo(List<Object[]> resultados){
+    public List<TransacaoResumo> createResumo(List<Object[]> resultados){ //DEPRECATED
         List<TransacaoResumo> resumos = new ArrayList<>();
         for (Object[] resultado : resultados) {
             String ticker = (String) resultado[0];
@@ -50,7 +55,7 @@ public class TransacaoService {
         transacaoRepository.save(transacao);
     }
 
-    public Transacao setTransacao(Result result, String quantidade, TipoTransacao tipoTransacao){
+    public void setTransacao(Result result, String quantidade, TipoTransacao tipoTransacao){
         Transacao transacao = new Transacao();
         int intQuantidade = Integer.parseInt(quantidade);
         Acao acao = new Acao(result.symbol,result.regularMarketPrice);
@@ -61,13 +66,39 @@ public class TransacaoService {
         }
 
         transacao.setQuantidade(intQuantidade);
-        transacao.setTotal();
+        transacao.setTotalTransacao();
 
-        return transacao;
+        this.saveTransacao(transacao);
+
+        this.checkPosicao(transacao);
+
     }
 
-    public List<String> getTickers(){
+    public List<String> getTickersTransacao(){
+
         return this.transacaoRepository.getTickers();
+    } //DEPRECATED
+
+
+    public void checkPosicao(Transacao transacao){
+        Posicao posicao = posicaoService.findPosicaoByTicker(transacao.getAcao().getTicker());
+
+        if(posicao == null){
+            posicaoService.setPosicao(transacao);
+        }
+        else{
+           atualizarPosicao(transacao);
+        }
     }
+
+
+    public void atualizarPosicao(Transacao transacao){
+        System.out.println("ATUALIZANDO POSICAO");
+
+        posicaoService.atualizarPosicao(transacao);
+
+    }
+
+
 
 }
