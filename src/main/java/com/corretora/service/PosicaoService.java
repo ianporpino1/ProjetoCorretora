@@ -18,10 +18,6 @@ public class PosicaoService {
     @Autowired
     private PosicaoRepository posicaoRepository;
 
-    public List<String> getTickersPosicao(){
-
-        return this.posicaoRepository.getTickers();
-    }
 
     public Posicao findPosicaoByTicker(String ticker){
         return this.posicaoRepository.findPosicaoByTicker(ticker);
