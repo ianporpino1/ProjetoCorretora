@@ -58,15 +58,19 @@ public class TransacaoService {
     public void setTransacao(Result result, String quantidade, TipoTransacao tipoTransacao){
         Transacao transacao = new Transacao();
         int intQuantidade = Integer.parseInt(quantidade);
-        Acao acao = new Acao(result.symbol,result.regularMarketPrice);
+        Acao acao = new Acao(result.symbol,32);
         transacao.setAcao(acao);
         transacao.setTipoTransacao(tipoTransacao);
-        if(tipoTransacao.equals(tipoTransacao.VENDA)){
-            intQuantidade = -intQuantidade;
+        transacao.setQuantidade(intQuantidade);
+
+        if(tipoTransacao == TipoTransacao.VENDA){
+            double total = -(intQuantidade) * acao.getPreco();
+            transacao.setTotalTransacao(total);
+        }
+        else{
+            transacao.setTotalTransacao(intQuantidade * acao.getPreco());
         }
 
-        transacao.setQuantidade(intQuantidade);
-        transacao.setTotalTransacao();
 
         this.saveTransacao(transacao);
 
@@ -86,8 +90,11 @@ public class TransacaoService {
         if(posicao == null){
             posicaoService.setPosicao(transacao);
         }
-        else{
-           posicaoService.atualizarPosicao(transacao,posicao);
+        else if (transacao.getTipoTransacao() == TipoTransacao.COMPRA ){
+           posicaoService.atualizarPosicaoCompra(transacao,posicao);
+        }
+        else if (transacao.getTipoTransacao() == TipoTransacao.VENDA ){
+            posicaoService.atualizarPosicaoVenda(transacao,posicao);
         }
     }
 }

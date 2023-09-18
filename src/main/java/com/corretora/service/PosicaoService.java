@@ -5,6 +5,7 @@ import com.corretora.dto.PosicaoDTO;
 import com.corretora.dto.TransacaoResumo;
 import com.corretora.model.Posicao;
 import com.corretora.model.StatusPosicao;
+import com.corretora.model.TipoTransacao;
 import com.corretora.model.Transacao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -63,20 +64,38 @@ public class PosicaoService {
         return posicoesList;
     }
 
-    public void atualizarPosicao(Transacao transacao, Posicao posicao) {
-        if(posicao == null){
-            System.out.println("ERRO, POSICAO NAO ENCONTRADA");
-        }
-        else{
-            posicao.atualizarPosicao(transacao.getQuantidade(), transacao.getTotal());
+    public void atualizarPosicaoCompra(Transacao transacao, Posicao posicao) {
+            int novaQuantidade = transacao.getQuantidade() + posicao.getQuantidadeTotal();
+            posicao.setQuantidadeTotal(novaQuantidade);
+
+            double total = posicao.getValorTotal() + transacao.getTotal();
+            posicao.setValorTotal(total);
+
+            double novoPrecoMedio = (posicao.getValorTotal() / posicao.getQuantidadeTotal());
+            posicao.setPrecoMedio(novoPrecoMedio);
+
+            posicao.setStatusPosicao();
+
             posicaoRepository.save(posicao);
-        }
-
-
-
 
     }
 
 
+    public void atualizarPosicaoVenda(Transacao transacao, Posicao posicao) {
+        int novaQuantidade = -(transacao.getQuantidade()) + posicao.getQuantidadeTotal();
+        posicao.setQuantidadeTotal(novaQuantidade);
+
+        double resultado = (transacao.getAcao().getPreco() - posicao.getPrecoMedio()) * transacao.getQuantidade(); //talvez criar classe resultado
+
+        double total = posicao.getValorTotal() + transacao.getTotal()  +  resultado;
+        posicao.setValorTotal(total);
+
+        System.out.println("RESULTADO: " + resultado);
+
+        posicao.setStatusPosicao();
+
+        posicaoRepository.save(posicao);
+
+    }
 
 }

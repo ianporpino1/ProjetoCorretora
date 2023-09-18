@@ -39,8 +39,8 @@ public class Transacao implements Serializable {
         return totalTransacao;
     }
 
-    public void setTotalTransacao() {
-        this.totalTransacao = quantidade * acao.getPreco();
+    public void setTotalTransacao(double totalTransacao) {
+        this.totalTransacao = totalTransacao;
     }
 
     public int getQuantidade() {

@@ -80,20 +80,5 @@ public class Posicao implements Serializable {
     }
 
 
-    public Posicao atualizarPosicao(int quantidade, double valor){
-        this.quantidadeTotal += quantidade;
-        this.valorTotal += valor;
-        if(quantidadeTotal==0){
-            this.setQuantidadeTotal(0);
-        }
-        else{
-            this.precoMedio = (this.valorTotal / this.quantidadeTotal);
-        }
-
-
-        this.setStatusPosicao();
-
-        return this;
-    }
 
 }
