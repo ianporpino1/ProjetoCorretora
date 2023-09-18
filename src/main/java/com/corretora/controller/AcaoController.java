@@ -6,6 +6,7 @@ import com.corretora.dto.Result;
 import com.corretora.dto.Root;
 import com.corretora.model.TipoTransacao;
 import com.corretora.model.Transacao;
+import com.corretora.service.PosicaoService;
 import com.corretora.service.TransacaoService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,6 +16,8 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -28,14 +31,19 @@ import org.springframework.web.client.RestTemplate;
 import java.util.ArrayList;
 import java.util.List;
 
-
+@PropertySource("classpath:application-dev.properties")
 @Controller
 @Validated
 public class AcaoController {
 
     @Autowired
     private TransacaoService transacaoService;
+    @Autowired
+    private PosicaoService posicaoService;
     private Result result;
+
+    @Value("${apiKey}")
+    private String apiKey;
 
     @GetMapping("acao/comprar")
     public String pesquisaComprarAcao(Model model) {
@@ -49,8 +57,7 @@ public class AcaoController {
         model.addAttribute("ticker",ticker);
         String responseAPI = callAcaoApi(ticker,model);
 
-        return responseAPI;
-
+        return "comprarAcao";
 
     }
 
@@ -67,7 +74,7 @@ public class AcaoController {
 
     @GetMapping("acao/vender")
     public String pesquisaVenderAcao(Model model){
-        List<String> tickers =  transacaoService.getTickersTransacao(); //deprecated
+        List<String> tickers = posicaoService.getTickers();
         model.addAttribute("tickers",tickers);
 
         return "formVenderAcao";
@@ -75,7 +82,7 @@ public class AcaoController {
 
 
     @PostMapping("acao/vender")
-    public String getVenderAcao(Model model, @RequestParam String ticker) throws JsonProcessingException {
+    public String getVenderAcao(Model model, @RequestParam String ticker) throws JsonProcessingException, ValidationException {
         model.addAttribute("ticker",ticker);
         String responseAPI = callAcaoApi(ticker,model);
 
@@ -100,7 +107,7 @@ public class AcaoController {
         RestTemplate restTemplate = new RestTemplate();
 
         try{
-            String response = restTemplate.getForObject("https://brapi.dev/api/quote/"  +ticker + "?token=5wMmBsVdAuX3LXQ1NJvqoH", String.class);
+            String response = restTemplate.getForObject("https://brapi.dev/api/quote/"  +ticker + "?token="+ apiKey, String.class);
             ObjectMapper om = new ObjectMapper();
             Root root = om.readValue(response, Root.class);
 
@@ -111,7 +118,7 @@ public class AcaoController {
 
             System.out.println(result.symbol);
 
-            return "comprarAcao";
+            return "ok";
         }catch(HttpClientErrorException he){
             return "error/acaoNaoEncontradaError";
         }

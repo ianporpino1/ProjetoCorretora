@@ -16,20 +16,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.List;
 
 @Controller
-
 public class PortifolioController {
-
-    @Autowired
-    private TransacaoService transacaoService; //talvez usar sevice e no service q faria essa busca(DEPRECATED)
 
     @Autowired
     private PosicaoService posicaoService;
 
     @GetMapping("/portifolio")
     public String showPortifolio(Model model){
-        //recebe list de acoes
-        //List<TransacaoResumo> transacaoList =  this.transacaoService.calcularResumoAcoes();
-
        List<PosicaoDTO> posicoesList  = posicaoService.findAllFormatted();
 
         model.addAttribute("posicoesList", posicoesList);

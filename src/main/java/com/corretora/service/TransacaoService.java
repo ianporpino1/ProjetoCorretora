@@ -58,7 +58,7 @@ public class TransacaoService {
     public void setTransacao(Result result, String quantidade, TipoTransacao tipoTransacao){
         Transacao transacao = new Transacao();
         int intQuantidade = Integer.parseInt(quantidade);
-        Acao acao = new Acao(result.symbol,32);
+        Acao acao = new Acao(result.symbol, result.regularMarketPrice);
         transacao.setAcao(acao);
         transacao.setTipoTransacao(tipoTransacao);
         transacao.setQuantidade(intQuantidade);

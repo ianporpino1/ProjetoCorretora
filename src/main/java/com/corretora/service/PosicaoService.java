@@ -9,6 +9,7 @@ import com.corretora.model.TipoTransacao;
 import com.corretora.model.Transacao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -28,6 +29,8 @@ public class PosicaoService {
     public void savePosicao(Posicao posicao){
         this.posicaoRepository.save(posicao);
     }
+
+    public List<String> getTickers(){ return this.posicaoRepository.getTickers();}
 
     public void setPosicao(Transacao transacao){
         Posicao posicao = new Posicao();
@@ -80,7 +83,7 @@ public class PosicaoService {
 
     }
 
-
+    @Transactional
     public void atualizarPosicaoVenda(Transacao transacao, Posicao posicao) {
         int novaQuantidade = -(transacao.getQuantidade()) + posicao.getQuantidadeTotal();
         posicao.setQuantidadeTotal(novaQuantidade);
@@ -94,8 +97,19 @@ public class PosicaoService {
 
         posicao.setStatusPosicao();
 
-        posicaoRepository.save(posicao);
+
+
+        if(posicao.getQuantidadeTotal() == 0){
+
+            posicaoRepository.deleteByTicker(posicao.getAcao().getTicker());
+        }
+        else{
+            posicaoRepository.save(posicao);
+        }
+
 
     }
+
+
 
 }
