@@ -17,6 +17,7 @@ import java.util.List;
 public class PosicaoService {
     @Autowired
     private PosicaoRepository posicaoRepository;
+    //teste
 
 
     public Posicao findPosicaoByTicker(String ticker){
