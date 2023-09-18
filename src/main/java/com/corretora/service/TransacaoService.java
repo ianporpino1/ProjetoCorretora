@@ -87,18 +87,7 @@ public class TransacaoService {
             posicaoService.setPosicao(transacao);
         }
         else{
-           atualizarPosicao(transacao);
+           posicaoService.atualizarPosicao(transacao,posicao);
         }
     }
-
-
-    public void atualizarPosicao(Transacao transacao){
-        System.out.println("ATUALIZANDO POSICAO");
-
-        posicaoService.atualizarPosicao(transacao);
-
-    }
-
-
-
 }

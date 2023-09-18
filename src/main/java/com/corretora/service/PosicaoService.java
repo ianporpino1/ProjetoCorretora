@@ -63,8 +63,7 @@ public class PosicaoService {
         return posicoesList;
     }
 
-    public void atualizarPosicao(Transacao transacao) {
-        Posicao posicao = posicaoRepository.findPosicaoByTicker(transacao.getAcao().getTicker());
+    public void atualizarPosicao(Transacao transacao, Posicao posicao) {
         if(posicao == null){
             System.out.println("ERRO, POSICAO NAO ENCONTRADA");
         }
