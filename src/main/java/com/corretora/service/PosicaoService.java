@@ -30,7 +30,7 @@ public class PosicaoService {
         this.posicaoRepository.save(posicao);
     }
 
-    public List<String> getTickers(){ return this.posicaoRepository.getTickers();}
+    public List<String> findTickers(){ return this.posicaoRepository.findTickers();}
 
     public void setPosicao(Transacao transacao){
         Posicao posicao = new Posicao();
@@ -46,8 +46,8 @@ public class PosicaoService {
     }
 
 
-    public List<PosicaoDTO> findAllFormatted(){
-        List<Object[]> objPosicoes = this.posicaoRepository.findAllFormatted();
+    public List<PosicaoDTO> findFormattedPosicoes(){
+        List<Object[]> objPosicoes = this.posicaoRepository.findFormattedPosicoes();
         List<PosicaoDTO> posicoesList = formatPosicao(objPosicoes);
 
         return posicoesList;

@@ -29,7 +29,7 @@ public class TransacaoService {
         return (List<Transacao>) transacaoRepository.findAll();
     }
 
-    public List<TransacaoResumo> calcularResumoAcoes(){   //DEPRECATED
+    public List<TransacaoResumo> findFormattedTransacoes(){   //DEPRECATED
         List<Object[]> resultados = transacaoRepository.calcularResumoTransacoes();
         List<TransacaoResumo> resumos = createResumo(resultados);
 
@@ -40,11 +40,20 @@ public class TransacaoService {
         List<TransacaoResumo> resumos = new ArrayList<>();
         for (Object[] resultado : resultados) {
             String ticker = (String) resultado[0];
-            BigDecimal quantidade = (BigDecimal) resultado[1];
-            double precoMedio = (double) resultado[2];
+            int quantidade = (int) resultado[1];
+            double preco = (double) resultado[2];
             double total = (double) resultado[3];
+            int intTipo = (Byte) resultado[4];
 
-            TransacaoResumo resumo = new TransacaoResumo(ticker, quantidade, precoMedio,total);
+            String tipoTransacao = null;
+            if(intTipo == 0){
+                tipoTransacao = "COMPRA";
+            }
+            else if(intTipo == 1){
+                tipoTransacao = "VENDA";
+            }
+
+            TransacaoResumo resumo = new TransacaoResumo(ticker, quantidade, preco,total,tipoTransacao);
             resumos.add(resumo);
         }
         return resumos;
@@ -80,7 +89,7 @@ public class TransacaoService {
 
     public List<String> getTickersTransacao(){
 
-        return this.transacaoRepository.getTickers();
+        return this.transacaoRepository.findTickers();
     } //DEPRECATED
 
 

@@ -13,12 +13,12 @@ import java.util.List;
 public interface PosicaoRepository extends JpaRepository<Posicao, Long> {
 
     @Query(value = "SELECT ticker FROM corretoradb.posicao",nativeQuery = true)
-    List<String> getTickers();
+    List<String> findTickers();
     @Query(value = "SELECT * FROM corretoradb.posicao WHERE ticker = :ticker",nativeQuery = true)
     Posicao findPosicaoByTicker(@Param("ticker") String ticker);
 
     @Query(value = "SELECT ticker, TRUNCATE(preco_medio,2), quantidade_total, TRUNCATE(valor_total,2) FROM corretoradb.posicao",nativeQuery = true)
-    List<Object[]> findAllFormatted();
+    List<Object[]> findFormattedPosicoes();
     @Modifying
     @Query(value = "delete FROM corretoradb.posicao WHERE ticker = :ticker", nativeQuery = true)
     int deleteByTicker(@Param("ticker") String ticker);

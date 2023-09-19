@@ -23,7 +23,7 @@ public class PortifolioController {
 
     @GetMapping("/portifolio")
     public String showPortifolio(Model model){
-       List<PosicaoDTO> posicoesList  = posicaoService.findAllFormatted();
+       List<PosicaoDTO> posicoesList  = posicaoService.findFormattedPosicoes();
 
         model.addAttribute("posicoesList", posicoesList);
 

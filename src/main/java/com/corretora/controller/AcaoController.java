@@ -74,8 +74,7 @@ public class AcaoController {
 
     @GetMapping("acao/vender")
     public String pesquisaVenderAcao(Model model){
-        List<String> tickers = posicaoService.getTickers();
-        model.addAttribute("tickers",tickers);
+        List<String> tickers = posicaoService.findTickers();
 
         return "formVenderAcao";
     }
