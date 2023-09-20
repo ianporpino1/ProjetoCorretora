@@ -3,6 +3,7 @@ package com.corretora.service;
 import com.corretora.dao.TransacaoRepository;
 import com.corretora.dto.Result;
 import com.corretora.dto.TransacaoResumo;
+import com.corretora.excecao.QuantidadeInvalidaException;
 import com.corretora.model.Acao;
 import com.corretora.model.Posicao;
 import com.corretora.model.TipoTransacao;
@@ -64,9 +65,16 @@ public class TransacaoService {
         transacaoRepository.save(transacao);
     }
 
-    public void setTransacao(Result result, String quantidade, TipoTransacao tipoTransacao){
+    public void setTransacao(Result result, String quantidade, TipoTransacao tipoTransacao) throws QuantidadeInvalidaException {
         Transacao transacao = new Transacao();
+        if(quantidade == ""){
+            throw new QuantidadeInvalidaException("Quantidade Obrigatoria");
+        }
         int intQuantidade = Integer.parseInt(quantidade);
+        if(intQuantidade <= 0){
+            throw new QuantidadeInvalidaException("Quantidade Deve Ser Maior que 0");
+        }
+
         Acao acao = new Acao(result.symbol, result.regularMarketPrice);
         transacao.setAcao(acao);
         transacao.setTipoTransacao(tipoTransacao);
@@ -80,20 +88,20 @@ public class TransacaoService {
             transacao.setTotalTransacao(intQuantidade * acao.getPreco());
         }
 
+        this.checkPosicao(transacao);
+
 
         this.saveTransacao(transacao);
 
-        this.checkPosicao(transacao);
-
     }
 
-    public List<String> getTickersTransacao(){
+    public List<String> findTickersTransacao(){
 
         return this.transacaoRepository.findTickers();
     } //DEPRECATED
 
 
-    public void checkPosicao(Transacao transacao){
+    public void checkPosicao(Transacao transacao) throws QuantidadeInvalidaException {
         Posicao posicao = posicaoService.findPosicaoByTicker(transacao.getAcao().getTicker());
 
         if(posicao == null){

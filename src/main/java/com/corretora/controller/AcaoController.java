@@ -4,12 +4,15 @@ import com.corretora.dto.AcaoDTO;
 import com.corretora.dto.Result;
 
 import com.corretora.dto.Root;
+import com.corretora.excecao.AcaoInvalidaException;
+import com.corretora.excecao.QuantidadeInvalidaException;
 import com.corretora.model.TipoTransacao;
 import com.corretora.model.Transacao;
 import com.corretora.service.PosicaoService;
 import com.corretora.service.TransacaoService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.ValidationException;
 import jakarta.validation.constraints.Min;
@@ -18,6 +21,7 @@ import org.antlr.v4.runtime.misc.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -52,21 +56,32 @@ public class AcaoController {
     }
 
     @PostMapping("acao/comprar")
-    public String getComprarAcao(Model model,@RequestParam @NotBlank(message = "TICKER OBRIGATORIO") String ticker) throws JsonProcessingException, ValidationException {
-
+    public String getComprarAcao(Model model,@RequestParam String ticker) throws JsonProcessingException {
         model.addAttribute("ticker",ticker);
-        String responseAPI = callAcaoApi(ticker,model);
+        try{
+
+            callAcaoApi(ticker,model);
+
+        }catch (AcaoInvalidaException aie){
+            model.addAttribute("errorMessage",aie.getMessage());
+            return "error/acaoError";
+        }
 
         return "comprarAcao";
 
     }
 
     @PostMapping("/acaoComprar")
-    public String comprar(Model model, @RequestParam @Min(1) @NotBlank(message = "QUANTIDADE OBRIGATORIA OU MAIOR QUE 0") String quantidade) throws ValidationException{
+    public String comprar(Model model, @RequestParam String quantidade) {
         model.addAttribute("quantidade", quantidade);
+        try{
 
-        this.transacaoService.setTransacao(result,quantidade, TipoTransacao.COMPRA);
+            this.transacaoService.setTransacao(result,quantidade, TipoTransacao.COMPRA);
 
+        }catch (QuantidadeInvalidaException qie){
+            model.addAttribute("errorMessage",qie.getMessage());
+            return "error/quantidadeError";
+        }
 
         return "redirect:/portifolio";
     }
@@ -75,36 +90,47 @@ public class AcaoController {
     @GetMapping("acao/vender")
     public String pesquisaVenderAcao(Model model){
         List<String> tickers = posicaoService.findTickers();
-
+        model.addAttribute("tickers", tickers);
         return "formVenderAcao";
     }
 
 
     @PostMapping("acao/vender")
-    public String getVenderAcao(Model model, @RequestParam String ticker) throws JsonProcessingException, ValidationException {
+    public String getVenderAcao(Model model, @RequestParam String ticker) throws JsonProcessingException {
         model.addAttribute("ticker",ticker);
-        String responseAPI = callAcaoApi(ticker,model);
+        try{
+
+            callAcaoApi(ticker,model);
+
+        }catch (AcaoInvalidaException aie){
+            model.addAttribute("errorMessage",aie.getMessage());
+            return "error/acaoError";
+        }
+
 
         return "venderAcao";
     }
 
     @PostMapping("acao/acaoVender")
-    public String vender(Model model, @RequestParam @Min(value = 1,message = "QUANTIDADE MAIOR QUE 0") @NotBlank(message = "QUANTIDADE OBRIGATORIA")String quantidade) throws ValidationException{
+    public String vender(Model model, @RequestParam String quantidade){
         model.addAttribute("quantidade", quantidade);
+        try{
 
-        this.transacaoService.setTransacao(result,quantidade, TipoTransacao.VENDA);
+            this.transacaoService.setTransacao(result,quantidade, TipoTransacao.VENDA);
+
+        }catch (QuantidadeInvalidaException qie){
+            model.addAttribute("errorMessage",qie.getMessage());
+            return "error/quantidadeError";
+        }
+
 
         return "redirect:/portifolio";
     }
 
 
 
-
-
-
-    public String callAcaoApi(String ticker,Model model) throws JsonProcessingException, HttpClientErrorException {
+    public void callAcaoApi(String ticker,Model model) throws JsonProcessingException, AcaoInvalidaException {
         RestTemplate restTemplate = new RestTemplate();
-
         try{
             String response = restTemplate.getForObject("https://brapi.dev/api/quote/"  +ticker + "?token="+ apiKey, String.class);
             ObjectMapper om = new ObjectMapper();
@@ -117,24 +143,18 @@ public class AcaoController {
 
             System.out.println(result.symbol);
 
-            return "ok";
+
         }catch(HttpClientErrorException he){
-            return "error/acaoNaoEncontradaError";
+            throw new AcaoInvalidaException("Codigo: " + ticker + " Nao é uma Acao Valida");
+        }catch (UnrecognizedPropertyException upe){
+            throw new AcaoInvalidaException("Ticker Obrigatorio");
         }
 
     }
 
 
 
-    @ExceptionHandler(ValidationException.class)
-    public String ValidationErrorHandler(ValidationException ve,Model model) {
-        String errorMessage = ve.getMessage();
 
-        model.addAttribute("errorMessage", errorMessage);
-        System.out.println(ve.getMessage());
-
-        return "error/validationError";
-    }
 
 
 

@@ -3,7 +3,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragmentos :: head('Erro')}"></head>
 <body>
-  <p th:text="${errorMessage}"></p>
-  <a href="/portifolio">Portifolio</a>
+<p th:text="${errorMessage}"></p>
+<a href="javascript:history.back()">Retornar</a>
 </body>
 </html>

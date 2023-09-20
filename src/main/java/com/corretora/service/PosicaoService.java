@@ -3,6 +3,7 @@ package com.corretora.service;
 import com.corretora.dao.PosicaoRepository;
 import com.corretora.dto.PosicaoDTO;
 import com.corretora.dto.TransacaoResumo;
+import com.corretora.excecao.QuantidadeInvalidaException;
 import com.corretora.model.Posicao;
 import com.corretora.model.StatusPosicao;
 import com.corretora.model.TipoTransacao;
@@ -26,7 +27,7 @@ public class PosicaoService {
         return this.posicaoRepository.findPosicaoByTicker(ticker);
     }
 
-    public void savePosicao(Posicao posicao){
+    public void save(Posicao posicao){
         this.posicaoRepository.save(posicao);
     }
 
@@ -42,7 +43,7 @@ public class PosicaoService {
 
         posicao.setStatusPosicao();
 
-        this.savePosicao(posicao);
+        this.save(posicao);
     }
 
 
@@ -84,7 +85,10 @@ public class PosicaoService {
     }
 
     @Transactional
-    public void atualizarPosicaoVenda(Transacao transacao, Posicao posicao) {
+    public void atualizarPosicaoVenda(Transacao transacao, Posicao posicao) throws QuantidadeInvalidaException {
+        if(posicao.getQuantidadeTotal() - transacao.getQuantidade() < 0){
+            throw new QuantidadeInvalidaException("QUANTIDADE MAXIMA DE VENDA: "  + posicao.getQuantidadeTotal());
+        }
         int novaQuantidade = -(transacao.getQuantidade()) + posicao.getQuantidadeTotal();
         posicao.setQuantidadeTotal(novaQuantidade);
 
@@ -98,9 +102,7 @@ public class PosicaoService {
         posicao.setStatusPosicao();
 
 
-
         if(posicao.getQuantidadeTotal() == 0){
-
             posicaoRepository.deleteByTicker(posicao.getAcao().getTicker());
         }
         else{
