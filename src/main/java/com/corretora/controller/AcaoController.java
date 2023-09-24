@@ -129,7 +129,7 @@ public class AcaoController {
 
 
 
-    public void callAcaoApi(String ticker,Model model) throws JsonProcessingException, AcaoInvalidaException {
+    private void callAcaoApi(String ticker,Model model) throws JsonProcessingException, AcaoInvalidaException {
         RestTemplate restTemplate = new RestTemplate();
         try{
             String response = restTemplate.getForObject("https://brapi.dev/api/quote/"  +ticker + "?token="+ apiKey, String.class);

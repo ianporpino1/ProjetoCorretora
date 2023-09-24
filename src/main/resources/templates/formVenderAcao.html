@@ -2,7 +2,7 @@
 <html xmlns:th="https://www.thymeleaf.org">
 <head th:replace="~{fragmentos :: head('Vender')}"></head>
 <body>
-<h1>Vender Acao</h1>
+<header th:replace="~{fragmentos :: header('Vender Acao')}"></header>
 <form th:action="@{/acao/vender}" method="post">
   <select class="form-control" id="ticker" name="ticker" required>
     <option value="">select ticker</option>

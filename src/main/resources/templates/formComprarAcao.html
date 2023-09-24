@@ -2,7 +2,7 @@
 <html xmlns:th="https://www.thymeleaf.org">
 <head th:replace="~{fragmentos :: head('Comprar')}"></head>
 <body>
-<h1>Pesquisar Acao</h1>
+<header th:replace="~{fragmentos :: header('Pesquisar Acao')}"></header>
 <form th:href="@{/acao/comprar}" method="post">
   <p>Ticker: <input type="text" th:value="${ticker}" name="ticker" /></p>
   <button type="submit" class="btn btn-primary" />Submit </button> <button type="reset" class="btn btn-primary" />Reset</button>

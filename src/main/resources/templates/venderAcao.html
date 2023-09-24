@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragmentos :: head('Vender')}"></head>
 <body>
-<h2>Informacoes da Acao</h2>
+<header th:replace="~{fragmentos :: header('Informacoes da Acao')}"></header>
 <form th:action="@{/acao/acaoVender}" method="post">
     <table>
         <tr>
