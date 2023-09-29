@@ -1,5 +1,6 @@
 package com.corretora.controller;
 
+import com.corretora.dto.AcaoDTO;
 import com.corretora.dto.Result;
 import com.corretora.dto.Root;
 import com.corretora.excecao.AcaoInvalidaException;
@@ -31,7 +32,7 @@ public class VenderController {
     @Autowired
     private PosicaoService posicaoService;
 
-    private Result result;
+    private AcaoDTO result;
 
     @Autowired
     ApiService apiService;
@@ -52,10 +53,10 @@ public class VenderController {
         model.addAttribute("ticker",ticker);
         try{
 
-            Root root = apiService.callApi(ticker);
-            result = root.results.get(0);
-            model.addAttribute("symbol",result.symbol);
-            model.addAttribute("price",result.regularMarketPrice);
+            result = apiService.callApi(ticker);
+
+            model.addAttribute("symbol",result.ticker);
+            model.addAttribute("price",result.price);
 
         }catch (AcaoInvalidaException aie){
             model.addAttribute("errorMessage",aie.getMessage());

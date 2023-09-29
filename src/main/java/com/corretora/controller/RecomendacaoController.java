@@ -1,8 +1,10 @@
 package com.corretora.controller;
 
+import com.corretora.dto.AcaoDTO;
 import com.corretora.dto.Result;
 import com.corretora.dto.Root;
 import com.corretora.excecao.AcaoInvalidaException;
+import com.corretora.model.Acao;
 import com.corretora.service.ApiService;
 import com.corretora.service.RecomendacaoService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -27,7 +29,7 @@ public class RecomendacaoController {
     @Autowired
     ApiService apiService;
 
-    Result result;
+    AcaoDTO result;
 
     @GetMapping("/recomendacao")
     public String recomendacaoIndex(Model model){
@@ -41,7 +43,8 @@ public class RecomendacaoController {
         model.addAttribute("ticker",ticker);
         try{
 
-            apiService.callApi(ticker);
+            result = apiService.callApi(ticker);
+            //result = root.results.get(0);
 
         }catch (AcaoInvalidaException aie){
             model.addAttribute("errorMessage",aie.getMessage());
@@ -49,6 +52,8 @@ public class RecomendacaoController {
         }
 
         //retorno(lista de informacoes a serem exibidas) :chama o service para processamento, passando result.
+        double value = recomendacaoService.calcular(result);
+        model.addAttribute("value",value);
         //model.addAtributte("listaInformacoes",);
 
         return "recomendacaoAcao";

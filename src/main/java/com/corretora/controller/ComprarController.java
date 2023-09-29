@@ -1,5 +1,6 @@
 package com.corretora.controller;
 
+import com.corretora.dto.AcaoDTO;
 import com.corretora.dto.Result;
 import com.corretora.dto.Root;
 import com.corretora.excecao.AcaoInvalidaException;
@@ -28,8 +29,9 @@ public class ComprarController {
     @Autowired
     ApiService apiService;
 
-    private Result result;
+    //private Result result;
 
+    private AcaoDTO result;
 
 
     @GetMapping("acao/comprar")
@@ -43,11 +45,11 @@ public class ComprarController {
         model.addAttribute("ticker",ticker);
         try{
 
-            Root root = apiService.callApi(ticker);
-            result = root.results.get(0);
+            result = apiService.callApi(ticker);
 
-            model.addAttribute("symbol",result.symbol);
-            model.addAttribute("price",result.regularMarketPrice);
+
+            model.addAttribute("symbol",result.ticker);
+            model.addAttribute("price",result.price);
 
 
         }catch (AcaoInvalidaException aie){

@@ -1,5 +1,6 @@
 package com.corretora.service;
 
+import com.corretora.dto.AcaoDTO;
 import com.corretora.dto.Result;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +17,16 @@ public class RecomendacaoService {
     //PARAMETROS (P. LYNCH): EPS GROWTH%, DY%, P/E
 
 
-    public void calcular(Result result){
+    //API CALL STOCK FULL INFROMATION YH Finance Complete
+
+    public double calcular(AcaoDTO result){
+        double eps = result.price;
+        double epsGrowth = 0.07;
+
+
+        double value= (eps * (6 + 1*epsGrowth)*7)/ 12;
+
+        return value;
 
     }
 

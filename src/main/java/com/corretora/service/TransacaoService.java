@@ -1,6 +1,7 @@
 package com.corretora.service;
 
 import com.corretora.dao.TransacaoRepository;
+import com.corretora.dto.AcaoDTO;
 import com.corretora.dto.Result;
 import com.corretora.dto.TransacaoResumo;
 import com.corretora.excecao.QuantidadeInvalidaException;
@@ -65,7 +66,7 @@ public class TransacaoService {
         transacaoRepository.save(transacao);
     }
 
-    public void setTransacao(Result result, String quantidade, TipoTransacao tipoTransacao) throws QuantidadeInvalidaException {
+    public void setTransacao(AcaoDTO result, String quantidade, TipoTransacao tipoTransacao) throws QuantidadeInvalidaException {
         Transacao transacao = new Transacao();
         if(quantidade == ""){
             throw new QuantidadeInvalidaException("Quantidade Obrigatoria");
@@ -75,7 +76,7 @@ public class TransacaoService {
             throw new QuantidadeInvalidaException("Quantidade Deve Ser Maior que 0");
         }
 
-        Acao acao = new Acao(result.symbol, result.regularMarketPrice);
+        Acao acao = new Acao(result.ticker, result.price);
         transacao.setAcao(acao);
         transacao.setTipoTransacao(tipoTransacao);
         transacao.setQuantidade(intQuantidade);
