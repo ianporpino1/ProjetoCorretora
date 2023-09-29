@@ -54,6 +54,8 @@ public class VenderController {
 
             Root root = apiService.callApi(ticker);
             result = root.results.get(0);
+            model.addAttribute("symbol",result.symbol);
+            model.addAttribute("price",result.regularMarketPrice);
 
         }catch (AcaoInvalidaException aie){
             model.addAttribute("errorMessage",aie.getMessage());
