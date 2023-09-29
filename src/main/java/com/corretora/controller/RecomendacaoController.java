@@ -3,9 +3,12 @@ package com.corretora.controller;
 import com.corretora.dto.Result;
 import com.corretora.dto.Root;
 import com.corretora.excecao.AcaoInvalidaException;
+import com.corretora.service.ApiService;
+import com.corretora.service.RecomendacaoService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,8 +21,11 @@ import org.springframework.web.client.RestTemplate;
 @Controller
 public class RecomendacaoController {
 
-    @Value("${apiKey}")
-    private String apiKey;
+    @Autowired
+    RecomendacaoService recomendacaoService;
+
+    @Autowired
+    ApiService apiService;
 
     Result result;
 
@@ -35,7 +41,7 @@ public class RecomendacaoController {
         model.addAttribute("ticker",ticker);
         try{
 
-            callAcaoApi(ticker,model);
+            apiService.callApi(ticker);
 
         }catch (AcaoInvalidaException aie){
             model.addAttribute("errorMessage",aie.getMessage());
@@ -47,30 +53,6 @@ public class RecomendacaoController {
 
         return "recomendacaoAcao";
 
-    }
-
-
-
-    private void callAcaoApi(String ticker,Model model) throws JsonProcessingException, AcaoInvalidaException {
-        RestTemplate restTemplate = new RestTemplate();
-        try {
-            String response = restTemplate.getForObject("https://brapi.dev/api/quote/" + ticker + "?token=" + apiKey, String.class);
-            ObjectMapper om = new ObjectMapper();
-            Root root = om.readValue(response, Root.class);
-
-            result = root.results.get(0);
-
-            model.addAttribute("symbol", result.symbol);
-            model.addAttribute("price", result.regularMarketPrice);
-
-            System.out.println(result.symbol);
-
-
-        } catch (HttpClientErrorException he) {
-            throw new AcaoInvalidaException("Codigo: " + ticker + " Nao é uma Acao Valida");
-        } catch (UnrecognizedPropertyException upe) {
-            throw new AcaoInvalidaException("Ticker Obrigatorio");
-        }
     }
 
 

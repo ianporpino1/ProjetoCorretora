@@ -6,7 +6,7 @@ public class Result{
     public double twoHundredDayAverage;
     public double twoHundredDayAverageChange;
     public double twoHundredDayAverageChangePercent;
-    public long marketCap;
+    public long marketCap; //
     public String shortName;
     public String longName;
     public double regularMarketChange;
@@ -28,8 +28,8 @@ public class Result{
     public double fiftyTwoWeekHighChangePercent;
     public int fiftyTwoWeekLow;
     public double fiftyTwoWeekHigh;
-    public double priceEarnings;
-    public double earningsPerShare;
+    public double priceEarnings; //
+    public double earningsPerShare; //
     public String logourl;
     public String updatedAt;
 }
