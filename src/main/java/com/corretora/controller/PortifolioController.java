@@ -24,8 +24,15 @@ public class PortifolioController {
     @GetMapping("/portifolio")
     public String showPortifolio(Model model){
        List<PosicaoDTO> posicoesList  = posicaoService.findFormattedPosicoes();
+       double totalHoldings =0;
+       for(PosicaoDTO posicao : posicoesList){
+           totalHoldings += posicao.getValorTotal();
+       }
 
         model.addAttribute("posicoesList", posicoesList);
+
+        if(totalHoldings != 0)
+            model.addAttribute("totalHoldings", totalHoldings);
 
         return "portifolio";
     }

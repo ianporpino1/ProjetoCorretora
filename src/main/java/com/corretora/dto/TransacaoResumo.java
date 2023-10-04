@@ -7,6 +7,7 @@ import jakarta.persistence.Embeddable;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.sql.Date;
 
 public class TransacaoResumo { //SOON TO BE DEPRECATED(TALVEZ N, USAR PARA FORMAR HISTORICO)
     private String ticker;
@@ -17,12 +18,15 @@ public class TransacaoResumo { //SOON TO BE DEPRECATED(TALVEZ N, USAR PARA FORMA
 
     private String tipoTransacao;
 
-    public TransacaoResumo(String ticker, int quantidade, double preco, double total, String tipoTransacao) {
+    private String data;
+
+    public TransacaoResumo(String ticker, int quantidade, double preco, double total, String tipoTransacao, String data) {
         this.ticker = ticker;
         this.preco = preco;
         this.quantidade = quantidade;
         this.totalTransacao = total;
         this.tipoTransacao = tipoTransacao;
+        this.data = data;
     }
 
     public TransacaoResumo() {
@@ -69,4 +73,11 @@ public class TransacaoResumo { //SOON TO BE DEPRECATED(TALVEZ N, USAR PARA FORMA
         this.totalTransacao = total;
     }
 
+    public String getData() {
+        return data;
+    }
+
+    public void setData(String data) {
+        this.data = data;
+    }
 }

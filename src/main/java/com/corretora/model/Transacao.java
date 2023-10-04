@@ -4,7 +4,8 @@ import com.corretora.dto.AcaoDTO;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.sql.Date;
+import java.time.LocalDate;
 
 @Entity(name = "Transacao")
 public class Transacao implements Serializable {
@@ -20,7 +21,7 @@ public class Transacao implements Serializable {
     private double totalTransacao;
     private TipoTransacao tipoTransacao;
 
-    private Date dataHora; //data da transacao
+    private Date data; //data da transacao
 
     private Long idUsuario;
 
@@ -66,4 +67,13 @@ public class Transacao implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
+
+    public Date getData() {
+        return data;
+    }
+
+    public void setTodayData() {
+        this.data = Date.valueOf(LocalDate.now());
+    }
+
 }

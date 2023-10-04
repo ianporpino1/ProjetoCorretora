@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,6 +48,7 @@ public class TransacaoService {
             double preco = (double) resultado[2];
             double total = (double) resultado[3];
             int intTipo = (Byte) resultado[4];
+            Date data = (Date) resultado[5];
 
             String tipoTransacao = null;
             if(intTipo == 0){
@@ -55,7 +58,11 @@ public class TransacaoService {
                 tipoTransacao = "VENDA";
             }
 
-            TransacaoResumo resumo = new TransacaoResumo(ticker, quantidade, preco,total,tipoTransacao);
+            String dataFormatted = null;
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+            dataFormatted = simpleDateFormat.format(data);
+
+            TransacaoResumo resumo = new TransacaoResumo(ticker, quantidade, preco,total,tipoTransacao,dataFormatted);
             resumos.add(resumo);
         }
         return resumos;
@@ -80,6 +87,7 @@ public class TransacaoService {
         transacao.setAcao(acao);
         transacao.setTipoTransacao(tipoTransacao);
         transacao.setQuantidade(intQuantidade);
+        transacao.setTodayData();
 
         if(tipoTransacao == TipoTransacao.VENDA){
             double total = -(intQuantidade) * acao.getPreco();

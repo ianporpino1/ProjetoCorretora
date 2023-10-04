@@ -10,20 +10,20 @@
                 <thead>
                 <tr>
                     <th scope="col">Ticker</th>
+                    <th scope="col">Data</th>
                     <th scope="col">Operacao</th>
                     <th scope="col">Preco</th>
                     <th scope="col">Quantidade</th>
                     <th scope="col">Total</th>
-                    <th scope="col"></th>
-                    <th scope="col"></th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="transacao : ${transacoesList}">
-                    <td class="col-4" th:text="${transacao.ticker}">TICKER</td>
+                    <td class="col-3" th:text="${transacao.ticker}">TICKER</td>
+                    <td class="col-3" th:text="${transacao.data}">TICKER</td>
                     <td class="col-2" th:text="${transacao.tipoTransacao}">OPERACAO</td>
                     <td class="col-2" th:text="${transacao.preco}">PRECO</td>
-                    <td class="col-2" th:text="${transacao.quantidade}">QUANTIDADE</td>
+                    <td class="col-5" th:text="${transacao.quantidade}">QUANTIDADE</td>
                     <td class="col-2" th:text="${transacao.total}">TOTAL</td>
                 </tr>
                 </tbody>
