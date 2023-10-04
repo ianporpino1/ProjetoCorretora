@@ -2,7 +2,6 @@ package com.corretora.service;
 
 import com.corretora.dao.PosicaoRepository;
 import com.corretora.dto.PosicaoDTO;
-import com.corretora.dto.TransacaoResumo;
 import com.corretora.excecao.QuantidadeInvalidaException;
 import com.corretora.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +19,6 @@ public class PosicaoService {
 
     @Autowired
     private ResultadoService resultadoService;
-    //teste
 
 
     public Posicao findPosicaoByTicker(String ticker){
@@ -49,9 +47,8 @@ public class PosicaoService {
 
     public List<PosicaoDTO> findFormattedPosicoes(){
         List<Object[]> objPosicoes = this.posicaoRepository.findFormattedPosicoes();
-        List<PosicaoDTO> posicoesList = formatPosicao(objPosicoes);
 
-        return posicoesList;
+        return formatPosicao(objPosicoes);
     }
 
     public List<PosicaoDTO> formatPosicao(List<Object[]> objPosicoes){

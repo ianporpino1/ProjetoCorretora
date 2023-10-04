@@ -4,7 +4,24 @@
 <body>
 <header th:replace="~{fragmentos :: header('Calculadora Imposto de Renda')}"></header>
 <div class="container mt-4">
-
+    <form th:action="@{/calculadora-imposto-de-renda}" method="post">
+        <select class="form-control" id="mes" name="mes" required>
+            <option value="">select mes</option>
+            <option value="01">Janeiro</option>
+            <option value="02">Fevereiro</option>
+            <option value="03">Marco</option>
+            <option value="04">Abril</option>
+            <option value="05">Maio</option>
+            <option value="06">Junho</option>
+            <option value="07">Julho</option>
+            <option value="08">Agosto</option>
+            <option value="09">Setembro</option>
+            <option value="10">Outubro</option>
+            <option value="11">Novembro</option>
+            <option value="12">Dezembro</option>
+        </select>
+        <button type="submit" class="btn btn-primary" />Submit </button> <button type="reset" class="btn btn-primary" />Reset</button>
+    </form>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
 </body>

@@ -18,7 +18,7 @@ public class Resultado implements Serializable { //duas formas de fazer, cada ve
 
     private double resultado;
 
-    private double resultadoPorcentegem;
+    private double resultadoPorcentagem;
 
     private String ativo;
 
@@ -27,10 +27,10 @@ public class Resultado implements Serializable { //duas formas de fazer, cada ve
     public Resultado() {
     }
 
-    public Resultado(String ativo, double resultado, double resultadoPorcentegem) {
+    public Resultado(String ativo, double resultado, double resultadoPorcentagem) {
         this.ativo = ativo;
         this.resultado = resultado;
-        this.resultadoPorcentegem = resultadoPorcentegem;
+        this.resultadoPorcentagem = resultadoPorcentagem;
         this.data = Date.valueOf(LocalDate.now());
     }
 
@@ -50,12 +50,12 @@ public class Resultado implements Serializable { //duas formas de fazer, cada ve
         this.resultado = resultado;
     }
 
-    public double getResultadoPorcentegem() {
-        return resultadoPorcentegem;
+    public double getResultadoPorcentagem() {
+        return resultadoPorcentagem;
     }
 
-    public void setResultadoPorcentegem(double volume) {
-        this.resultadoPorcentegem = volume;
+    public void setResultadoPorcentagemem(double resultadoPorcentagem) {
+        this.resultadoPorcentagem = resultadoPorcentagem;
     }
 
     public String getAtivo() {

@@ -31,8 +31,8 @@ public class PortifolioController {
 
         model.addAttribute("posicoesList", posicoesList);
 
-        if(totalHoldings != 0)
-            model.addAttribute("totalHoldings", totalHoldings);
+
+       model.addAttribute("totalHoldings", totalHoldings);
 
         return "portifolio";
     }
