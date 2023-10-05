@@ -2,12 +2,8 @@ package com.corretora.service;
 
 import com.corretora.dao.PosicaoRepository;
 import com.corretora.dto.PosicaoDTO;
-import com.corretora.dto.TransacaoResumo;
 import com.corretora.excecao.QuantidadeInvalidaException;
-import com.corretora.model.Posicao;
-import com.corretora.model.StatusPosicao;
-import com.corretora.model.TipoTransacao;
-import com.corretora.model.Transacao;
+import com.corretora.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +16,9 @@ import java.util.List;
 public class PosicaoService {
     @Autowired
     private PosicaoRepository posicaoRepository;
-    //teste
+
+    @Autowired
+    private ResultadoService resultadoService;
 
 
     public Posicao findPosicaoByTicker(String ticker){
@@ -49,9 +47,8 @@ public class PosicaoService {
 
     public List<PosicaoDTO> findFormattedPosicoes(){
         List<Object[]> objPosicoes = this.posicaoRepository.findFormattedPosicoes();
-        List<PosicaoDTO> posicoesList = formatPosicao(objPosicoes);
 
-        return posicoesList;
+        return formatPosicao(objPosicoes);
     }
 
     public List<PosicaoDTO> formatPosicao(List<Object[]> objPosicoes){
@@ -92,12 +89,14 @@ public class PosicaoService {
         int novaQuantidade = -(transacao.getQuantidade()) + posicao.getQuantidadeTotal();
         posicao.setQuantidadeTotal(novaQuantidade);
 
-        double resultado = (transacao.getAcao().getPreco() - posicao.getPrecoMedio()) * transacao.getQuantidade(); //talvez criar classe resultado
+        double resultadoFinanceiro = (transacao.getAcao().getPreco() - posicao.getPrecoMedio()) * transacao.getQuantidade();
 
-        double total = posicao.getValorTotal() + transacao.getTotal()  +  resultado;
+        resultadoService.save(new Resultado(posicao.getAcao().getTicker(),resultadoFinanceiro, (resultadoFinanceiro / (transacao.getQuantidade() * posicao.getPrecoMedio()) * 100) ));
+
+        double total = posicao.getValorTotal() + transacao.getTotal()  +  resultadoFinanceiro;
         posicao.setValorTotal(total);
 
-        System.out.println("RESULTADO: " + resultado);
+        System.out.println("RESULTADO: " + resultadoFinanceiro);
 
         posicao.setStatusPosicao();
 

@@ -47,7 +47,7 @@ public class ComprarController {
 
             result = apiService.callApi(ticker);
 
-
+            result.ticker = result.ticker.toUpperCase();
             model.addAttribute("symbol",result.ticker);
             model.addAttribute("price",result.price);
 
