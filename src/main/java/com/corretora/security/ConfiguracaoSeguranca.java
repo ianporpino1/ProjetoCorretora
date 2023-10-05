@@ -1,5 +1,6 @@
 package com.corretora.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -11,10 +12,16 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import com.corretora.service.FiltroService;
 
 @Configuration
 @EnableWebSecurity
 public class ConfiguracaoSeguranca {
+	
+	@Autowired
+	private FiltroService filtro;
 	
 	@Bean
 	public SecurityFilterChain configPermissoes(HttpSecurity httpsec) throws Exception {
@@ -24,7 +31,8 @@ public class ConfiguracaoSeguranca {
 				.authorizeHttpRequests(authorize -> authorize
 						.requestMatchers(HttpMethod.POST, "/logar").permitAll()
 						.requestMatchers(HttpMethod.POST, "/registrar").permitAll()
-						.anyRequest().authenticated())
+						.anyRequest().authenticated()
+				).addFilterBefore(filtro, UsernamePasswordAuthenticationFilter.class)
 				.build();
 	}
 	

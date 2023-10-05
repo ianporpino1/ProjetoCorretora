@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.corretora.dao.UsuarioRepository;
+import com.corretora.dto.LoginDTO;
 import com.corretora.dto.UsuarioDTO;
 import com.corretora.model.Usuario;
+import com.corretora.service.TokenService;
 
 import jakarta.validation.Valid;
 
@@ -23,17 +25,16 @@ public class UsuarioController {
 	private AuthenticationManager validacaoLogin;
 	@Autowired
 	private UsuarioRepository repo;
+	@Autowired
+	private TokenService token;
 	
 	@PostMapping("/logar")
-	public ResponseEntity<?> logarUsuario(@RequestBody @Valid UsuarioDTO user) {
-		UsernamePasswordAuthenticationToken upat = new UsernamePasswordAuthenticationToken(user.login, user.password);
-		Authentication a = validacaoLogin.authenticate(upat);
-		
-		if (a.isAuthenticated()) {
-			return ResponseEntity.ok().build();
-		} else {
-			return ResponseEntity.badRequest().build();
-		}
+	public ResponseEntity<?> logarUsuario(@RequestBody @Valid LoginDTO login) {
+		UsernamePasswordAuthenticationToken userPassAuthToken = new UsernamePasswordAuthenticationToken(login.login, login.password);
+		var auth = this.validacaoLogin.authenticate(userPassAuthToken);
+		Usuario user = (Usuario) auth.getPrincipal();
+
+		return ResponseEntity.ok(token.geraToken(user));
 	}
 	
 	@PostMapping("/registrar")
@@ -42,9 +43,9 @@ public class UsuarioController {
 			return ResponseEntity.badRequest().build();
 		} 
 		
-		String senhaHash = new BCryptPasswordEncoder().encode(user.password);
-		Usuario novoUser = new Usuario(user.firstName, user.lastName, user.login, senhaHash);
-		this.repo.save(novoUser);
+		String hashPassword = new BCryptPasswordEncoder().encode(user.password);
+		Usuario newUser = new Usuario(user.firstName, user.lastName, user.login, hashPassword);
+		this.repo.save(newUser);
 		
 		return ResponseEntity.ok().build();
 	}
