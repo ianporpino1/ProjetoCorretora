@@ -18,18 +18,21 @@ public class PosicaoService {
     private PosicaoRepository posicaoRepository;
 
     @Autowired
+    AutorizacaoService autorizacaoService;
+
+    @Autowired
     private ResultadoService resultadoService;
 
 
     public Posicao findPosicaoByTicker(String ticker){
-        return this.posicaoRepository.findPosicaoByTicker(ticker);
+        return this.posicaoRepository.findPosicaoByTicker(ticker,autorizacaoService.LoadUsuarioLogado().getId());
     }
 
     public void save(Posicao posicao){
         this.posicaoRepository.save(posicao);
     }
 
-    public List<String> findTickers(){ return this.posicaoRepository.findTickers();}
+    public List<String> findTickers(){ return this.posicaoRepository.findTickers(autorizacaoService.LoadUsuarioLogado().getId());}
 
     public void setPosicao(Transacao transacao){
         Posicao posicao = new Posicao();
@@ -38,7 +41,7 @@ public class PosicaoService {
         posicao.setQuantidadeTotal(transacao.getQuantidade());
         posicao.setPrecoMedio(posicao.getAcao().getPreco());
         posicao.setValorTotal(transacao.getTotal());
-
+        posicao.setIdUsuario(autorizacaoService.LoadUsuarioLogado().getId());
         posicao.setStatusPosicao();
 
         this.save(posicao);
@@ -46,7 +49,7 @@ public class PosicaoService {
 
 
     public List<PosicaoDTO> findFormattedPosicoes(){
-        List<Object[]> objPosicoes = this.posicaoRepository.findFormattedPosicoes();
+        List<Object[]> objPosicoes = this.posicaoRepository.findFormattedPosicoes(autorizacaoService.LoadUsuarioLogado().getId());
 
         return formatPosicao(objPosicoes);
     }
@@ -90,8 +93,8 @@ public class PosicaoService {
         posicao.setQuantidadeTotal(novaQuantidade);
 
         double resultadoFinanceiro = (transacao.getAcao().getPreco() - posicao.getPrecoMedio()) * transacao.getQuantidade();
+        resultadoService.setResultado(new Resultado(posicao.getAcao().getTicker(),resultadoFinanceiro, (resultadoFinanceiro / (transacao.getQuantidade() * posicao.getPrecoMedio()) * 100),posicao.getIdUsuario() ));
 
-        resultadoService.save(new Resultado(posicao.getAcao().getTicker(),resultadoFinanceiro, (resultadoFinanceiro / (transacao.getQuantidade() * posicao.getPrecoMedio()) * 100) ));
 
         double total = posicao.getValorTotal() + transacao.getTotal()  +  resultadoFinanceiro;
         posicao.setValorTotal(total);
@@ -102,7 +105,7 @@ public class PosicaoService {
 
 
         if(posicao.getQuantidadeTotal() == 0){
-            posicaoRepository.deleteByTicker(posicao.getAcao().getTicker());
+            posicaoRepository.deleteByTicker(posicao.getAcao().getTicker(),autorizacaoService.LoadUsuarioLogado().getId());
         }
         else{
             posicaoRepository.save(posicao);

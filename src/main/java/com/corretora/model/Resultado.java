@@ -24,14 +24,17 @@ public class Resultado implements Serializable { //duas formas de fazer, cada ve
 
     private Date data;
 
+    private Long idUsuario;
+
     public Resultado() {
     }
 
-    public Resultado(String ativo, double resultado, double resultadoPorcentagem) {
+    public Resultado(String ativo, double resultado, double resultadoPorcentagem, Long idUsuario) {
         this.ativo = ativo;
         this.resultado = resultado;
         this.resultadoPorcentagem = resultadoPorcentagem;
         this.data = Date.valueOf(LocalDate.now());
+        this.idUsuario = idUsuario;
     }
 
     public Long getId() {
@@ -72,5 +75,13 @@ public class Resultado implements Serializable { //duas formas de fazer, cada ve
 
     public void setData(Date data) {
         this.data = data;
+    }
+
+    public Long getIdUsuario() {
+        return idUsuario;
+    }
+
+    public void setIdUsuario(Long idUsuario) {
+        this.idUsuario = idUsuario;
     }
 }

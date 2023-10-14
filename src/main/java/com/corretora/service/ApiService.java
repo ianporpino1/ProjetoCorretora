@@ -31,7 +31,7 @@ public class ApiService {
         HttpHeaders headers = new HttpHeaders();
         headers.add("X-RapidAPI-Key", apiKey);
         headers.add("X-RapidAPI-Host","realstonks.p.rapidapi.com");
-        HttpEntity<Object> entity=new HttpEntity<Object>(headers);
+        HttpEntity<Object> entity= new HttpEntity<>(headers);
 
         try{
             ResponseEntity<String> response = restTemplate.exchange("https://realstonks.p.rapidapi.com/"  +ticker, HttpMethod.GET,entity,String.class);

@@ -18,13 +18,16 @@ public class ResultadoService {
     @Autowired
     private ResultadoRepository resultadoRepository;
 
+    @Autowired
+    AutorizacaoService autorizacaoService;
+
 
     public void save(Resultado resultado){
         this.resultadoRepository.save(resultado);
     }
 
     public List<ResultadoDTO> findResultadoByData(int mes){
-        List<Object[]> objResultados = this.resultadoRepository.findResultadoByData(mes);
+        List<Object[]> objResultados = this.resultadoRepository.findResultadoByData(mes,autorizacaoService.LoadUsuarioLogado().getId());
         return formatResultado(objResultados);
     }
 
@@ -56,5 +59,21 @@ public class ResultadoService {
         imposto = Math.round(imposto);
         imposto = imposto/100;
         return imposto;
+    }
+
+    public void setResultado(Resultado novoResultado){
+        save(novoResultado);
+    }
+
+
+    public double calcularResultadoTotal(List<ResultadoDTO> resultadosList) {
+        double total=0;
+        for(ResultadoDTO resultado : resultadosList){
+            total += resultado.getResultado();
+        }
+        total = total*100;
+        total = Math.round(total);
+        total = total/100;
+        return total;
     }
 }

@@ -12,16 +12,16 @@ import java.util.List;
 @Repository
 public interface PosicaoRepository extends JpaRepository<Posicao, Long> {
 
-    @Query(value = "SELECT ticker FROM corretoradb.posicao",nativeQuery = true)
-    List<String> findTickers();
-    @Query(value = "SELECT * FROM corretoradb.posicao WHERE ticker = :ticker",nativeQuery = true)
-    Posicao findPosicaoByTicker(@Param("ticker") String ticker);
+    @Query(value = "SELECT ticker FROM corretoradb.posicao WHERE id_usuario = :idUsuario",nativeQuery = true)
+    List<String> findTickers(@Param("idUsuario")Long idUsuario);
+    @Query(value = "SELECT * FROM corretoradb.posicao WHERE ticker = :ticker AND id_usuario = :idUsuario",nativeQuery = true)
+    Posicao findPosicaoByTicker(@Param("ticker") String ticker,@Param("idUsuario")Long idUsuario);
 
-    @Query(value = "SELECT ticker, TRUNCATE(preco_medio,2), quantidade_total, TRUNCATE(valor_total,2) FROM corretoradb.posicao",nativeQuery = true)
-    List<Object[]> findFormattedPosicoes();
+    @Query(value = "SELECT ticker, TRUNCATE(preco_medio,2), quantidade_total, TRUNCATE(valor_total,2) FROM corretoradb.posicao WHERE id_usuario = :idUsuario",nativeQuery = true)
+    List<Object[]> findFormattedPosicoes(@Param("idUsuario")Long idUsuario);
     @Modifying
-    @Query(value = "delete FROM corretoradb.posicao WHERE ticker = :ticker", nativeQuery = true)
-    int deleteByTicker(@Param("ticker") String ticker);
+    @Query(value = "delete FROM corretoradb.posicao WHERE ticker = :ticker AND id_usuario = :idUsuario", nativeQuery = true)
+    int deleteByTicker(@Param("ticker") String ticker, @Param("idUsuario")Long idUsuario);
 
 
 

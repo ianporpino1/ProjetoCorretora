@@ -19,9 +19,18 @@ public class Posicao implements Serializable {
     private double valorTotal;
     private StatusPosicao statusPosicao;
 
+    private Long idUsuario;
+
     public Posicao() {
     }
 
+    public Long getIdUsuario() {
+        return idUsuario;
+    }
+
+    public void setIdUsuario(Long idUsuario) {
+        this.idUsuario = idUsuario;
+    }
 
     public Long getId() {
         return id;

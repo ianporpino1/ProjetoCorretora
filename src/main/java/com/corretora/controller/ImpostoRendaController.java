@@ -31,8 +31,10 @@ public class ImpostoRendaController {
     public String calcularIR(Model model,@RequestParam int mes){
         List<ResultadoDTO> resultadosList = resultadoService.findResultadoByData(mes);
         double valorImposto = resultadoService.calcularIR(resultadosList);
+        double resultadoTotal = resultadoService.calcularResultadoTotal(resultadosList);
         model.addAttribute("resultadosList", resultadosList);
         model.addAttribute("valorImposto", valorImposto);
+        model.addAttribute("resultadoTotal",resultadoTotal);
 
         return "impostoCalculado";
     }

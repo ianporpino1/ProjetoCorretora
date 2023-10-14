@@ -1,19 +1,18 @@
 <!DOCTYPE html>
 <html xmlns:th="https://www.thymeleaf.org">
 <head>
-<meta charset="UTF-8">
 </head>
 <body>
 
-<form th:action="@{/registrar}" method="post">
-  <label for="firstName">Primeiro nome:</label><br>
-  <input type="text" id="firstName" name="firstName"><br>
-  <label for="lastName">Último nome:</label><br>
-  <input type="text" id="lastName" name="lastName"><br>
-  <label for="login">Login:</label><br>
-  <input type="text" id="login" name="login"><br>
-  <label for="password">Senha:</label><br>
-  <input type="password" id="password" name="password">
+<form th:action="@{/registrar}" method="post" th:object="${UsuarioDTO}">
+  <label>Primeiro nome:</label><br>
+  <input type="text" th:field="*{firstName}" name="firstName"><br>
+  <label>Último nome:</label><br>
+  <input type="text" th:field="*{lastName}"  name="lastName"><br>
+  <label>Username:</label><br>
+  <input type="text" th:field="*{username}" name="username"><br>
+  <label>Senha:</label><br>
+  <input type="password" th:field="*{password}" name="password">
   <input type="submit" value="Submit">
 </form>
 

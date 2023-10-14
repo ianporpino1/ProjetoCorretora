@@ -19,28 +19,28 @@ import jakarta.persistence.Id;
 public class Usuario implements UserDetails {
 
 	@Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     private String firstName;
     private String lastName;
     
-    private String login;
+    private String username;
     private String password;
     
     public Usuario() {
     	
     }
     
-    public Usuario(String firstName, String lastName, String login, String password) {
+    public Usuario(String firstName, String lastName, String username, String password) {
 		super();
 		this.firstName = firstName;
 		this.lastName = lastName;
-		this.login = login;
+		this.username = username;
 		this.password = password;
 	}
 
-	public String getId() {
+	public Long getId() {
 		return id;
 	}
 
@@ -56,7 +56,7 @@ public class Usuario implements UserDetails {
 
 	@Override
 	public String getUsername() {
-		return login;
+		return username;
 	}
 
 	@Override

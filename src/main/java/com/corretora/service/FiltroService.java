@@ -1,3 +1,4 @@
+/*
 package com.corretora.service;
 
 import java.io.IOException;
@@ -32,7 +33,7 @@ public class FiltroService extends OncePerRequestFilter {
 		if (authHeader != null) {
 			token = authHeader.replace("Bearer " , "");
 			String subject = (String) this.tokenService.getSubject(token);
-			var user = this.repo.findByLogin(subject);
+			var user = this.repo.findByUsername(subject);
 			var auth = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
 			
 			SecurityContextHolder.getContext().setAuthentication(auth);
@@ -42,3 +43,4 @@ public class FiltroService extends OncePerRequestFilter {
 	}
 
 }
+*/

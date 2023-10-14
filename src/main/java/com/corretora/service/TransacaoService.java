@@ -5,12 +5,10 @@ import com.corretora.dto.AcaoDTO;
 import com.corretora.dto.Result;
 import com.corretora.dto.TransacaoResumo;
 import com.corretora.excecao.QuantidadeInvalidaException;
-import com.corretora.model.Acao;
-import com.corretora.model.Posicao;
-import com.corretora.model.TipoTransacao;
-import com.corretora.model.Transacao;
+import com.corretora.model.*;
 import jakarta.validation.constraints.Null;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -26,6 +24,9 @@ public class TransacaoService {
     private TransacaoRepository transacaoRepository;
 
     @Autowired
+    private AutorizacaoService autorizacaoService;
+
+    @Autowired
     private  PosicaoService posicaoService;
 
     public List<Transacao> findAllTransacao(){
@@ -34,7 +35,7 @@ public class TransacaoService {
     }
 
     public List<TransacaoResumo> findFormattedTransacoes(){   //DEPRECATED
-        List<Object[]> resultados = transacaoRepository.calcularResumoTransacoes();
+        List<Object[]> resultados = transacaoRepository.calcularResumoTransacoes(autorizacaoService.LoadUsuarioLogado().getId());
         List<TransacaoResumo> resumos = createResumo(resultados);
 
         return resumos;
@@ -88,6 +89,8 @@ public class TransacaoService {
         transacao.setTipoTransacao(tipoTransacao);
         transacao.setQuantidade(intQuantidade);
         transacao.setTodayData();
+        transacao.setIdUsuario(autorizacaoService.LoadUsuarioLogado().getId());
+
 
         if(tipoTransacao == TipoTransacao.VENDA){
             double total = -(intQuantidade) * acao.getPreco();

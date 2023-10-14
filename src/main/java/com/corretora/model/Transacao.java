@@ -76,4 +76,11 @@ public class Transacao implements Serializable {
         this.data = Date.valueOf(LocalDate.now());
     }
 
+    public Long getIdUsuario() {
+        return idUsuario;
+    }
+
+    public void setIdUsuario(Long idUsuario) {
+        this.idUsuario = idUsuario;
+    }
 }
