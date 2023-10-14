@@ -1,5 +1,6 @@
 package com.corretora.controller;
 
+import com.corretora.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -25,22 +26,21 @@ public class UsuarioController {
 	
 
 	@Autowired
-	private UsuarioRepository repo;
-	@Autowired
-	private TokenService token;
+	private UsuarioService usuarioService;
+
 	
 
 	
 	@PostMapping("/registrar")
-	public String registrarUsuario(@ModelAttribute @Valid UsuarioDTO user) {
+	public String registrarUsuario(@ModelAttribute @Valid UsuarioDTO userDTO) {
 	//public ResponseEntity<?> registarUsuario(@ModelAttribute @Valid UsuarioDTO user) {
-		if (this.repo.findByUsername(user.username) != null) {
+		if (this.usuarioService.findByUsername(userDTO.username) != null) {
 			return ResponseEntity.badRequest().build().toString();
-		} 
-		
-		String hashPassword = new BCryptPasswordEncoder().encode(user.password);
-		Usuario newUser = new Usuario(user.firstName, user.lastName, user.username, hashPassword);
-		this.repo.save(newUser);
+		}
+
+		Usuario newUser = usuarioService.configUser(userDTO);
+
+		usuarioService.save(newUser);
 		
 		//return "registrar";
 		return "redirect:/logar";

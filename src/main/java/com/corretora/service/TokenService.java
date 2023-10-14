@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import com.corretora.model.Usuario;
 
 @Service
-public class TokenService {
+public class TokenService { //inutilizado
 
 	public String geraToken(Usuario u) {
 		return JWT.create()

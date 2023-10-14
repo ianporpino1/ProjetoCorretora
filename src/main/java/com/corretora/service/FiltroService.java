@@ -1,4 +1,4 @@
-/*
+/* INUTILIZADO
 package com.corretora.service;
 
 import java.io.IOException;
