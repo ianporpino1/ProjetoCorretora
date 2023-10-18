@@ -1,6 +1,6 @@
 package com.corretora.dto;
 
-public class LoginDTO {
+public class LoginDTO { //SEM USO
 	public String login;
 	public String password;
 

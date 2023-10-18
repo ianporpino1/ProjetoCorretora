@@ -5,6 +5,13 @@
 <header th:replace="~{fragmentos :: header('Calculadora Imposto de Renda')}"></header>
 <div class="container mt-4">
     <form th:action="@{/calculadora-imposto-de-renda}" method="post">
+        <select class="form-control" id="ano" name="ano" required>
+            <option value="">ano</option>
+            <option th:each="year : ${#numbers.sequence(#dates.year(#dates.createNow()), #dates.year(#dates.createNow())-5)}"
+                    th:value="${year}"
+                    th:text="${year}">
+            </option>
+        </select>
         <select class="form-control" id="mes" name="mes" required>
             <option value="">select mes</option>
             <option value="01">Janeiro</option>

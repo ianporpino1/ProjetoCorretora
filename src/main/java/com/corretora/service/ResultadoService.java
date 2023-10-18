@@ -1,10 +1,8 @@
 package com.corretora.service;
 
 
-import com.corretora.dao.PosicaoRepository;
 import com.corretora.dao.ResultadoRepository;
 import com.corretora.dto.ResultadoDTO;
-import com.corretora.model.Posicao;
 import com.corretora.model.Resultado;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,8 +24,8 @@ public class ResultadoService {
         this.resultadoRepository.save(resultado);
     }
 
-    public List<ResultadoDTO> findResultadoByData(int mes){
-        List<Object[]> objResultados = this.resultadoRepository.findResultadoByData(mes,autorizacaoService.LoadUsuarioLogado().getId());
+    public List<ResultadoDTO> findResultadoByData(int mes, int ano){
+        List<Object[]> objResultados = this.resultadoRepository.findResultadoByData(mes,ano,autorizacaoService.LoadUsuarioLogado().getId());
         return formatResultado(objResultados);
     }
 

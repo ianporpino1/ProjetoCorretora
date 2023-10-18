@@ -1,17 +1,12 @@
 package com.corretora.service;
 
 import com.corretora.dao.TransacaoRepository;
-import com.corretora.dto.AcaoDTO;
-import com.corretora.dto.Result;
 import com.corretora.dto.TransacaoResumo;
 import com.corretora.excecao.QuantidadeInvalidaException;
 import com.corretora.model.*;
-import jakarta.validation.constraints.Null;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -34,14 +29,13 @@ public class TransacaoService {
         return (List<Transacao>) transacaoRepository.findAll();
     }
 
-    public List<TransacaoResumo> findFormattedTransacoes(){   //DEPRECATED
+    public List<TransacaoResumo> findFormattedTransacoes(){
         List<Object[]> resultados = transacaoRepository.calcularResumoTransacoes(autorizacaoService.LoadUsuarioLogado().getId());
-        List<TransacaoResumo> resumos = createResumo(resultados);
 
-        return resumos;
+        return createResumo(resultados);
     }
 
-    public List<TransacaoResumo> createResumo(List<Object[]> resultados){ //DEPRECATED
+    public List<TransacaoResumo> createResumo(List<Object[]> resultados){
         List<TransacaoResumo> resumos = new ArrayList<>();
         for (Object[] resultado : resultados) {
             String ticker = (String) resultado[0];
@@ -74,7 +68,7 @@ public class TransacaoService {
         transacaoRepository.save(transacao);
     }
 
-    public void setTransacao(AcaoDTO result, String quantidade, TipoTransacao tipoTransacao) throws QuantidadeInvalidaException {
+    public void setTransacao(Acao acao, String quantidade, TipoTransacao tipoTransacao) throws QuantidadeInvalidaException {
         Transacao transacao = new Transacao();
         if(quantidade == ""){
             throw new QuantidadeInvalidaException("Quantidade Obrigatoria");
@@ -84,7 +78,6 @@ public class TransacaoService {
             throw new QuantidadeInvalidaException("Quantidade Deve Ser Maior que 0");
         }
 
-        Acao acao = new Acao(result.ticker, result.price);
         transacao.setAcao(acao);
         transacao.setTipoTransacao(tipoTransacao);
         transacao.setQuantidade(intQuantidade);

@@ -1,33 +1,30 @@
 package com.corretora.service;
 
 import com.corretora.dto.AcaoDTO;
-import com.corretora.dto.Result;
+import com.corretora.dto.RecomendacaoDTO.Attributes;
 import org.springframework.stereotype.Service;
+
+import java.util.*;
 
 @Service
 public class RecomendacaoService {
 
-    //GRAHAMS FORMULA AND PETER LYNCHS
+    //1/EvEbitda
+    public List<Double> processarInformacoes(Attributes attributes){
+        ArrayList<Double> informacoes = new ArrayList<>();
 
-    //PARAMETROS (GRAHAM): EPS, EPS GROWTH%, GROWTH MULTIPLIER(1), BOND YIELD AVERAGE%(7), CURRENT BOND YIELD%(13), FAIR P/E of a zero growth stock(6).
+        double retornoEmPorcentagemEsperado = (1/attributes.evEbitda)*100;
+        retornoEmPorcentagemEsperado = retornoEmPorcentagemEsperado*100;
+        retornoEmPorcentagemEsperado = Math.round(retornoEmPorcentagemEsperado);
+        retornoEmPorcentagemEsperado = retornoEmPorcentagemEsperado/100;
 
-    //FORMULA V= EPS*()
+        double priceEarningsRatio = attributes.lastClosePriceEarningsRatio*100;
+        priceEarningsRatio = Math.round(priceEarningsRatio);
+        priceEarningsRatio = priceEarningsRatio/100;
 
+        informacoes.add(retornoEmPorcentagemEsperado);
+        informacoes.add(priceEarningsRatio);
 
-    //PARAMETROS (P. LYNCH): EPS GROWTH%, DY%, P/E
-
-
-    //API CALL STOCK FULL INFROMATION YH Finance Complete
-
-    public double calcular(AcaoDTO result){
-        double eps = result.price;
-        double epsGrowth = 0.07;
-
-
-        double value= (eps * (6 + 1*epsGrowth)*7)/ 12;
-
-        return value;
-
+        return informacoes;
     }
-
 }
