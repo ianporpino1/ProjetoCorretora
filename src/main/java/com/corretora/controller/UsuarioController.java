@@ -29,11 +29,8 @@ public class UsuarioController {
 	private UsuarioService usuarioService;
 
 	
-
-	
 	@PostMapping("/registrar")
 	public String registrarUsuario(@ModelAttribute @Valid UsuarioDTO userDTO) {
-	//public ResponseEntity<?> registarUsuario(@ModelAttribute @Valid UsuarioDTO user) {
 		if (this.usuarioService.findByUsername(userDTO.username) != null) {
 			return ResponseEntity.badRequest().build().toString();
 		}
@@ -41,8 +38,7 @@ public class UsuarioController {
 		Usuario newUser = usuarioService.configUser(userDTO);
 
 		usuarioService.save(newUser);
-		
-		//return "registrar";
+
 		return "redirect:/logar";
 	}
 
@@ -54,7 +50,7 @@ public class UsuarioController {
 
 	@GetMapping("/logar")
 	public String logar(Model model){
-		model.addAttribute("LoginDTO", new LoginDTO());
+
 		return "logar";
 	}
 
