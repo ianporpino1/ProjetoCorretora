@@ -11,13 +11,11 @@ public class ResultadoDTO {
 
     private double resultadoPorcentagem;
 
-    private Date data;
 
-    public ResultadoDTO(String ativo, double resultado, double resultadoPorcentagem, Date data) {
+    public ResultadoDTO(String ativo, double resultado, double resultadoPorcentagem) {
         this.ativo = ativo;
         this.resultado = resultado;
         this.resultadoPorcentagem = resultadoPorcentagem;
-        this.data = data;
 
     }
 
@@ -47,11 +45,4 @@ public class ResultadoDTO {
         this.resultadoPorcentagem = resultadoPorcentagem;
     }
 
-    public Date getData() {
-        return data;
-    }
-
-    public void setData(Date data) {
-        this.data = data;
-    }
 }

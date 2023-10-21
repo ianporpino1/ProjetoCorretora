@@ -47,9 +47,9 @@ public class ResultadoService {
             String ativo = (String) objResultado[0];
             double resultado = (double) objResultado[1];
             double resultadoPorcentegem = (double) objResultado[2];
-            Date data = (Date) objResultado[3];
 
-            ResultadoDTO res = new ResultadoDTO(ativo, resultado, resultadoPorcentegem, data);
+
+            ResultadoDTO res = new ResultadoDTO(ativo, resultado, resultadoPorcentegem);
 
             resultadosList.add(res);
         }

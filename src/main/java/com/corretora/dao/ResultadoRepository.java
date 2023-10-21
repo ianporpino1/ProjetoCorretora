@@ -11,7 +11,7 @@ import java.util.List;
 
 @Repository
 public interface ResultadoRepository extends JpaRepository<Resultado, Long> {
-    @Query(value = "SELECT ativo, TRUNCATE(resultado,2), TRUNCATE(resultado_porcentagem,2), data FROM corretoradb.resultado WHERE MONTH(data) = :mes AND YEAR(data) = :ano AND id_usuario = :idUsuario",nativeQuery = true)
+    @Query(value = "SELECT ativo, TRUNCATE(resultado,2), TRUNCATE(resultado_porcentagem,2) FROM corretoradb.resultado WHERE MONTH(data) = :mes AND YEAR(data) = :ano AND id_usuario = :idUsuario",nativeQuery = true)
     List<Object[]> findAllResultadoByData(@Param("mes") int mes,@Param("ano") int ano, @Param("idUsuario")Long idUsuario);
 
     @Query(value = "SELECT * FROM corretoradb.resultado WHERE id_usuario = :idUsuario AND ativo = :ativo",nativeQuery = true)

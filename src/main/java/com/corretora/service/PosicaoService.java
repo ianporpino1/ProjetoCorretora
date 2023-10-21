@@ -93,7 +93,7 @@ public class PosicaoService {
         int novaQuantidade = -(transacao.getQuantidade()) + posicao.getQuantidadeTotal();
         posicao.setQuantidadeTotal(novaQuantidade);
 
-        double resultadoFinanceiro = (200 - posicao.getPrecoMedio()) * transacao.getQuantidade();
+        double resultadoFinanceiro = (transacao.getAcao().getPreco() - posicao.getPrecoMedio()) * transacao.getQuantidade();
         Resultado resultado = new Resultado(posicao.getAcao().getTicker(),resultadoFinanceiro, (resultadoFinanceiro / (transacao.getQuantidade() * posicao.getPrecoMedio()) * 100),posicao.getIdUsuario() );
         resultadoService.saveResultado(resultado);
         LocalDate localDate = resultado.getData().toLocalDate();
