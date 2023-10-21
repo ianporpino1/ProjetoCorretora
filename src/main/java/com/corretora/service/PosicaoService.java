@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -92,14 +93,16 @@ public class PosicaoService {
         int novaQuantidade = -(transacao.getQuantidade()) + posicao.getQuantidadeTotal();
         posicao.setQuantidadeTotal(novaQuantidade);
 
-        double resultadoFinanceiro = (transacao.getAcao().getPreco() - posicao.getPrecoMedio()) * transacao.getQuantidade();
-        resultadoService.setResultado(new Resultado(posicao.getAcao().getTicker(),resultadoFinanceiro, (resultadoFinanceiro / (transacao.getQuantidade() * posicao.getPrecoMedio()) * 100),posicao.getIdUsuario() ));
+        double resultadoFinanceiro = (200 - posicao.getPrecoMedio()) * transacao.getQuantidade();
+        Resultado resultado = new Resultado(posicao.getAcao().getTicker(),resultadoFinanceiro, (resultadoFinanceiro / (transacao.getQuantidade() * posicao.getPrecoMedio()) * 100),posicao.getIdUsuario() );
+        resultadoService.saveResultado(resultado);
+        LocalDate localDate = resultado.getData().toLocalDate();
 
+        resultadoService.calcularIR(localDate.getMonthValue(),localDate.getYear());
 
         double total = posicao.getValorTotal() + transacao.getTotal()  +  resultadoFinanceiro;
         posicao.setValorTotal(total);
 
-        System.out.println("RESULTADO: " + resultadoFinanceiro);
 
         posicao.setStatusPosicao();
 

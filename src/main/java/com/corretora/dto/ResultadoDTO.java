@@ -1,5 +1,8 @@
 package com.corretora.dto;
 
+
+import java.sql.Date;
+
 public class ResultadoDTO {
 
     private String ativo;
@@ -8,10 +11,13 @@ public class ResultadoDTO {
 
     private double resultadoPorcentagem;
 
-    public ResultadoDTO(String ativo, double resultado, double resultadoPorcentagem) {
+    private Date data;
+
+    public ResultadoDTO(String ativo, double resultado, double resultadoPorcentagem, Date data) {
         this.ativo = ativo;
         this.resultado = resultado;
         this.resultadoPorcentagem = resultadoPorcentagem;
+        this.data = data;
 
     }
 
@@ -41,4 +47,11 @@ public class ResultadoDTO {
         this.resultadoPorcentagem = resultadoPorcentagem;
     }
 
+    public Date getData() {
+        return data;
+    }
+
+    public void setData(Date data) {
+        this.data = data;
+    }
 }

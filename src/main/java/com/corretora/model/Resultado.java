@@ -11,7 +11,7 @@ import java.time.LocalDate;
 
 
 @Entity(name = "Resultado")
-public class Resultado implements Serializable { //duas formas de fazer, cada venda gera um resultado OU cada ticker tem um aglomerado de resultados
+public class Resultado implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
