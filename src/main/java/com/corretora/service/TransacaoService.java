@@ -26,13 +26,17 @@ public class TransacaoService {
     private  PosicaoService posicaoService;
     
     public double getSaldo(){
-    	double saldo = 0;
-    	for(TransacaoResumo t : this.findFormattedTransacoes()) {
-    		if(t.getTipoTransacao().equals("ENTRADA") || t.getTipoTransacao().equals("SAIDA")) {
-    			saldo += t.getTotal();
+    	List<Double> saldo = transacaoRepository.calcularSaldo(autorizacaoService.LoadUsuarioLogado().getId());
+    	
+    	if (saldo.size() == 0) {
+    		return 0;
+    	} else {
+    		double total = 0;
+    		for (double d : saldo) {
+    			total += d;
     		}
+    		return total;
     	}
-    	return saldo;
     }
 
     public List<Transacao> findAllTransacao(){
@@ -90,33 +94,35 @@ public class TransacaoService {
             throw new QuantidadeInvalidaException("Quantidade Deve Ser Maior que 0");
         }
         
+        transacao.setAcao(acao);
         transacao.setTipoTransacao(tipoTransacao);
         transacao.setQuantidade(intQuantidade);
         transacao.setTodayData();
         transacao.setIdUsuario(autorizacaoService.LoadUsuarioLogado().getId());
         
-        if(acao.isTickerNull()) {
-        	if(tipoTransacao == TipoTransacao.SAIDA){
-                double total = -(intQuantidade) * acao.getPreco();
-                transacao.setTotalTransacao(total);
-            } else{
-                transacao.setTotalTransacao(acao.getPreco());
-            }
-        } else {
-        	transacao.setAcao(acao);
+        if(tipoTransacao == TipoTransacao.SAIDA){
         	
-        	if(tipoTransacao == TipoTransacao.VENDA){
-                double total = -(intQuantidade) * acao.getPreco();
-                transacao.setTotalTransacao(total);
-            } else{
-            	double total = intQuantidade * acao.getPreco();
-            	if (this.getSaldo() - total < 0) {
-            		throw new AcaoInvalidaException("Saldo insuficiente para realizar a compra");
-            	} else {
-            		transacao.setTotalTransacao(total);
-            	}
+        	double total = -(intQuantidade) * acao.getPreco();
+            transacao.setTotalTransacao(total);
+            
+        } else if(tipoTransacao == TipoTransacao.ENTRADA){
+        	
+            transacao.setTotalTransacao(acao.getPreco());
+            
+        } else if(tipoTransacao == TipoTransacao.VENDA){
+        	
+            double total = -(intQuantidade) * acao.getPreco();
+            transacao.setTotalTransacao(total);
+            
+        } else{
+            double total = intQuantidade * acao.getPreco();
+            
+            if (this.getSaldo() - total < 0) {
+            	throw new AcaoInvalidaException("Saldo insuficiente para realizar a compra");
+            } else {
+            	transacao.setTotalTransacao(total);
             }
-        }
+       }
 
         this.checkPosicao(transacao);
 
