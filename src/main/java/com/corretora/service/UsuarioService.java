@@ -18,12 +18,12 @@ public class UsuarioService {
     }
 
     public Usuario configUser(UsuarioDTO userDTO) throws AcaoInvalidaException{
-    	if(this.findByUsername(userDTO.getUsername()).equals(null)) {
-    		
+    	if(this.findByUsername(userDTO.getUsername()) == null){
+
     		String hashPassword = new BCryptPasswordEncoder().encode(userDTO.password);
-    		
+
             return new Usuario(userDTO.firstName, userDTO.lastName, userDTO.username, hashPassword);
-            
+
         } else {
         	throw new AcaoInvalidaException("Este username não está disponível");
         }
