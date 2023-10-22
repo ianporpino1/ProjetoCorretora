@@ -13,7 +13,11 @@ public class Acao implements Serializable {
 
     public Acao() {
     }
-
+    
+    public Acao(double preco) {
+        this.preco = preco;
+    }
+    
     public Acao(String ticker, double preco) {
         this.ticker = ticker;
         this.preco = preco;

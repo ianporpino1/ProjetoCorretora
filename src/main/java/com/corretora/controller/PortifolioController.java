@@ -20,6 +20,9 @@ public class PortifolioController {
 
     @Autowired
     private PosicaoService posicaoService;
+    
+    @Autowired 
+    private TransacaoService transacaoService;
 
     @GetMapping("/portifolio")
     public String showPortifolio(Model model){
@@ -29,12 +32,13 @@ public class PortifolioController {
            totalHoldings += posicao.getValorTotal();
        }
 
-        model.addAttribute("posicoesList", posicoesList);
-
+       model.addAttribute("posicoesList", posicoesList);
+       
+       model.addAttribute("saldo", transacaoService.getSaldo());
 
        model.addAttribute("totalHoldings", totalHoldings);
 
-        return "portifolio";
+       return "portifolio";
     }
 
     @GetMapping("")

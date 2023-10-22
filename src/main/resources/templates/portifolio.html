@@ -28,12 +28,15 @@
                     </tr>
                     <tr>
                         <p th:text="${'Total de Holdings: USD$' + totalHoldings}"></p>
+                        <p th:text="${'Saldo em caixa: USD$' + saldo}"></p>
                     </tr>
                 </tbody>
             </table>
         </div>
     </div>
     <a href="/acao/comprar">Pesquisar Acao</a>
+    <a href="/depositar">Depositar Valores</a>
+    <a href="/retirar">Retirar Valores</a>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
 </body>

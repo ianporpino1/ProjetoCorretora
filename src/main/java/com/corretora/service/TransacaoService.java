@@ -2,6 +2,7 @@ package com.corretora.service;
 
 import com.corretora.dao.TransacaoRepository;
 import com.corretora.dto.TransacaoResumo;
+import com.corretora.excecao.AcaoInvalidaException;
 import com.corretora.excecao.QuantidadeInvalidaException;
 import com.corretora.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,11 +24,22 @@ public class TransacaoService {
 
     @Autowired
     private  PosicaoService posicaoService;
+    
+    public double getSaldo(){
+    	double saldo = 0;
+    	for(TransacaoResumo t : this.findFormattedTransacoes()) {
+    		if(t.getTipoTransacao().equals("ENTRADA") || t.getTipoTransacao().equals("SAIDA")) {
+    			saldo += t.getTotal();
+    		}
+    	}
+    	return saldo;
+    }
 
     public List<Transacao> findAllTransacao(){
 
         return (List<Transacao>) transacaoRepository.findAll();
     }
+    
 
     public List<TransacaoResumo> findFormattedTransacoes(){
         List<Object[]> resultados = transacaoRepository.calcularResumoTransacoes(autorizacaoService.LoadUsuarioLogado().getId());
@@ -68,7 +80,7 @@ public class TransacaoService {
         transacaoRepository.save(transacao);
     }
 
-    public void setTransacao(Acao acao, String quantidade, TipoTransacao tipoTransacao) throws QuantidadeInvalidaException {
+    public void setTransacao(Acao acao, String quantidade, TipoTransacao tipoTransacao) throws QuantidadeInvalidaException, AcaoInvalidaException{
         Transacao transacao = new Transacao();
         if(quantidade == ""){
             throw new QuantidadeInvalidaException("Quantidade Obrigatoria");
@@ -77,27 +89,38 @@ public class TransacaoService {
         if(intQuantidade <= 0){
             throw new QuantidadeInvalidaException("Quantidade Deve Ser Maior que 0");
         }
-
-        transacao.setAcao(acao);
+        
         transacao.setTipoTransacao(tipoTransacao);
         transacao.setQuantidade(intQuantidade);
         transacao.setTodayData();
         transacao.setIdUsuario(autorizacaoService.LoadUsuarioLogado().getId());
-
-
-        if(tipoTransacao == TipoTransacao.VENDA){
-            double total = -(intQuantidade) * acao.getPreco();
-            transacao.setTotalTransacao(total);
-        }
-        else{
-            transacao.setTotalTransacao(intQuantidade * acao.getPreco());
+        
+        if(acao.getTicker().equals(null)) {
+        	if(tipoTransacao == TipoTransacao.SAIDA){
+                double total = -(intQuantidade) * acao.getPreco();
+                transacao.setTotalTransacao(total);
+            } else{
+                transacao.setTotalTransacao(acao.getPreco());
+            }
+        } else {
+        	transacao.setAcao(acao);
+        	
+        	if(tipoTransacao == TipoTransacao.VENDA){
+                double total = -(intQuantidade) * acao.getPreco();
+                transacao.setTotalTransacao(total);
+            } else{
+            	double total = intQuantidade * acao.getPreco();
+            	if (this.getSaldo() - total < 0) {
+            		throw new AcaoInvalidaException("Saldo insuficiente para realizar a compra");
+            	} else {
+            		transacao.setTotalTransacao(total);
+            	}
+            }
         }
 
         this.checkPosicao(transacao);
 
-
         this.saveTransacao(transacao);
-
     }
 
     public List<String> findTickersTransacao(){
