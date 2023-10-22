@@ -40,5 +40,7 @@ public class Acao implements Serializable {
         this.ticker = ticker;
     }
 
-
+    public boolean isTickerNull() {
+    	return ticker == null;
+    }
 }

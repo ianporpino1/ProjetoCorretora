@@ -24,7 +24,7 @@ public class RetirarController {
     @GetMapping("/retirar")
     public String formRemocao(Model model) {
     	model.addAttribute("caixa", transacaoService.getSaldo());
-    	return "formRetirar";
+    	return "Retirar";
     }
     
     @PostMapping("/retirar") 

@@ -23,7 +23,7 @@ public class DepositarController {
     
     @GetMapping("/depositar")
     public String formDeposito() {
-    	return "formDepositar";
+    	return "Depositar";
     }
     
     @PostMapping("/depositar") 

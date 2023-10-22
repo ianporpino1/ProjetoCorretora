@@ -44,6 +44,7 @@ public class ConfiguracaoSeguranca {
 				.loginPage("/logar")
 				.defaultSuccessUrl("/portifolio", true)
 						.permitAll()
+				.failureUrl("/logar")
 		);
 
 		return httpsec.build();

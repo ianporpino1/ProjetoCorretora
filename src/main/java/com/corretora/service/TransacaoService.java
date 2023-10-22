@@ -95,7 +95,7 @@ public class TransacaoService {
         transacao.setTodayData();
         transacao.setIdUsuario(autorizacaoService.LoadUsuarioLogado().getId());
         
-        if(acao.getTicker().equals(null)) {
+        if(acao.isTickerNull()) {
         	if(tipoTransacao == TipoTransacao.SAIDA){
                 double total = -(intQuantidade) * acao.getPreco();
                 transacao.setTotalTransacao(total);
@@ -130,16 +130,15 @@ public class TransacaoService {
 
 
     public void checkPosicao(Transacao transacao) throws QuantidadeInvalidaException {
-        Posicao posicao = posicaoService.findPosicaoByTicker(transacao.getAcao().getTicker());
+    	if(transacao.getAcao() != null){
+    		Posicao posicao = posicaoService.findPosicaoByTicker(transacao.getAcao().getTicker());
 
-        if(posicao == null){
-            posicaoService.setPosicao(transacao);
-        }
-        else if (transacao.getTipoTransacao() == TipoTransacao.COMPRA ){
-           posicaoService.atualizarPosicaoCompra(transacao,posicao);
-        }
-        else if (transacao.getTipoTransacao() == TipoTransacao.VENDA ){
-            posicaoService.atualizarPosicaoVenda(transacao,posicao);
+            if (transacao.getTipoTransacao() == TipoTransacao.COMPRA ){
+               posicaoService.atualizarPosicaoCompra(transacao,posicao);
+            }
+            else if (transacao.getTipoTransacao() == TipoTransacao.VENDA ){
+                posicaoService.atualizarPosicaoVenda(transacao,posicao);
+            }
         }
     }
 }
