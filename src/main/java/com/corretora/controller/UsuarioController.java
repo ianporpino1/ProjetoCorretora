@@ -24,7 +24,7 @@ public class UsuarioController {
 
 	
 	@PostMapping("/registrar")
-	public String registrarUsuario(@ModelAttribute @Valid UsuarioDTO userDTO) {
+	public String registrarUsuario(Model model, @ModelAttribute @Valid UsuarioDTO userDTO) {
 		try {
 			
 			Usuario newUser = usuarioService.configUser(userDTO);
@@ -32,6 +32,7 @@ public class UsuarioController {
 			usuarioService.save(newUser);
 			
 		} catch(AcaoInvalidaException aie) {
+			model.addAttribute("errorMessage",aie.getMessage());
 			return "error/acaoError";
 		}
 		

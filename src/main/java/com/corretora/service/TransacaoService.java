@@ -86,6 +86,8 @@ public class TransacaoService {
 
     public void setTransacao(Acao acao, String quantidade, TipoTransacao tipoTransacao) throws QuantidadeInvalidaException, AcaoInvalidaException{
         Transacao transacao = new Transacao();
+        long userId = autorizacaoService.LoadUsuarioLogado().getId();
+        
         if(quantidade == ""){
             throw new QuantidadeInvalidaException("Quantidade Obrigatoria");
         }
@@ -98,7 +100,7 @@ public class TransacaoService {
         transacao.setTipoTransacao(tipoTransacao);
         transacao.setQuantidade(intQuantidade);
         transacao.setTodayData();
-        transacao.setIdUsuario(autorizacaoService.LoadUsuarioLogado().getId());
+        transacao.setIdUsuario(userId);
         
         if(tipoTransacao == TipoTransacao.SAIDA){
         	
@@ -111,9 +113,17 @@ public class TransacaoService {
             
         } else if(tipoTransacao == TipoTransacao.ENTRADA){
         	
-            transacao.setTotalTransacao(acao.getPreco());
+        	if (acao.getPreco() <= 0) {
+            	throw new AcaoInvalidaException("O deposito precisa ser maior que 0");
+            } else {
+            	transacao.setTotalTransacao(acao.getPreco());
+            }
             
         } else if(tipoTransacao == TipoTransacao.VENDA){
+        	
+        	if(intQuantidade > transacaoRepository.calcularQuantAcoes(userId, acao.getTicker())) {
+        		throw new QuantidadeInvalidaException("A quantidade não pode ser maior do que o tanto que você possui");
+        	}
         	
             double total = -(intQuantidade) * acao.getPreco();
             transacao.setTotalTransacao(total);
