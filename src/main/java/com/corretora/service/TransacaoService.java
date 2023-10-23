@@ -26,14 +26,23 @@ public class TransacaoService {
     private  PosicaoService posicaoService;
     
     public double getSaldo(){
-    	List<Double> saldo = transacaoRepository.calcularSaldo(autorizacaoService.LoadUsuarioLogado().getId());
+    	List<Object[]> saldoBruto = transacaoRepository.calcularSaldo(autorizacaoService.LoadUsuarioLogado().getId());
     	
-    	if (saldo.size() == 0) {
+    	if (saldoBruto.size() == 0) {
     		return 0;
     	} else {
     		double total = 0;
-    		for (double d : saldo) {
-    			total += d;
+    		for (Object[] saldo : saldoBruto) {
+                int intTipo = (Byte) saldo[1];
+                if(intTipo == 0){
+                    saldo[0] = -(Double)saldo[0];
+                }
+                else if(intTipo == 1){
+                    saldo[0] = - (Double)saldo[0];
+                }
+
+    			total += (Double)saldo[0];
+
     		}
     		return total;
     	}
@@ -67,6 +76,14 @@ public class TransacaoService {
             }
             else if(intTipo == 1){
                 tipoTransacao = "VENDA";
+            }
+            else if(intTipo == 2){
+                tipoTransacao = "DEPOSITO";
+                ticker =  tipoTransacao;
+            }
+            else if(intTipo == 3){
+                tipoTransacao = "RETIRADA";
+                ticker =  tipoTransacao;
             }
 
             String dataFormatted = null;
@@ -120,11 +137,7 @@ public class TransacaoService {
             }
             
         } else if(tipoTransacao == TipoTransacao.VENDA){
-        	
-        	if(intQuantidade > transacaoRepository.calcularQuantAcoes(userId, acao.getTicker())) {
-        		throw new QuantidadeInvalidaException("A quantidade não pode ser maior do que o tanto que você possui");
-        	}
-        	
+
             double total = -(intQuantidade) * acao.getPreco();
             transacao.setTotalTransacao(total);
             this.checkPosicao(transacao);
@@ -144,11 +157,6 @@ public class TransacaoService {
 
         this.saveTransacao(transacao);
     }
-
-    public List<String> findTickersTransacao(){
-
-        return this.transacaoRepository.findTickers();
-    } //DEPRECATED
 
 
     public void checkPosicao(Transacao transacao) throws QuantidadeInvalidaException {
