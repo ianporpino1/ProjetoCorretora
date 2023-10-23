@@ -10,7 +10,6 @@
         <thead>
         <tr>
           <th scope="col">Ticker</th>
-          <th scope="col">Data</th>
           <th scope="col">Resultado</th>
           <th scope="col">Rentabilidade</th>
         </tr>
@@ -18,7 +17,6 @@
         <tbody>
         <tr th:each="resultado : ${resultadosList}">
           <td class="col-4" th:text="${resultado.ativo}">TICKER</td>
-          <td class="col-3" th:text="${resultado.data}">DATA</td>
           <td class="col-2" th:text="${'$' + resultado.resultado}">Resultado</td>
           <td class="col-2" th:text="${resultado.resultadoPorcentagem+ '%'}">Rentabilidade</td>
         </tr>
