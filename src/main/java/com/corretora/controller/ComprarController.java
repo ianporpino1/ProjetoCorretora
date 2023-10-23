@@ -26,8 +26,6 @@ public class ComprarController {
     @Autowired
     ApiService apiService;
 
-    //private Result result;
-
     private AcaoDTO result;
 
 
