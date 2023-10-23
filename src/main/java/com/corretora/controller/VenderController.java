@@ -16,6 +16,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -46,7 +47,7 @@ public class VenderController {
 
 
     @PostMapping("acao/vender")
-    public String getVenderAcao(Model model, @RequestParam String ticker) throws JsonProcessingException {
+    public String getVenderAcao(Model model, @RequestParam String ticker, RedirectAttributes redirectAttributes) throws JsonProcessingException {
         model.addAttribute("ticker",ticker);
         try{
 
@@ -61,7 +62,8 @@ public class VenderController {
         }
 
 
-        return "venderAcao";
+        redirectAttributes.addAttribute("ticker", result.ticker);
+        return "redirect:/acao/vender/{ticker}";
     }
 
     @PostMapping("acao/acaoVender")
@@ -84,6 +86,14 @@ public class VenderController {
 
 
         return "redirect:/portifolio";
+    }
+
+
+    @GetMapping("/acao/vender/{ticker}")
+    public String showComprarAcao(Model model) {
+        model.addAttribute("symbol",result.ticker);
+        model.addAttribute("price",result.price);
+        return "venderAcao";
     }
 
 

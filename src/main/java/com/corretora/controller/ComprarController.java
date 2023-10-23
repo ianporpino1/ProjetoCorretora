@@ -13,8 +13,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @Validated
@@ -36,7 +38,7 @@ public class ComprarController {
     }
 
     @PostMapping("acao/comprar")
-    public String getComprarAcao(Model model,@RequestParam String ticker) throws JsonProcessingException {
+    public String getComprarAcao(Model model,@RequestParam String ticker, RedirectAttributes redirectAttributes) throws JsonProcessingException {
         model.addAttribute("ticker",ticker);
         try{
 
@@ -52,7 +54,8 @@ public class ComprarController {
             return "error/acaoError";
         }
 
-        return "comprarAcao";
+        redirectAttributes.addAttribute("ticker", result.ticker);
+        return "redirect:/acao/comprar/{ticker}";
 
     }
 
@@ -71,10 +74,19 @@ public class ComprarController {
             return "error/quantidadeError";
         }catch (AcaoInvalidaException aie){
             model.addAttribute("errorMessage",aie.getMessage());
+
             return "error/acaoError";
         }
 
         return "redirect:/portifolio";
     }
+
+    @GetMapping("/acao/comprar/{ticker}")
+    public String showComprarAcao(Model model) {
+        model.addAttribute("symbol",result.ticker);
+        model.addAttribute("price",result.price);
+        return "comprarAcao";
+    }
+
 
 }
