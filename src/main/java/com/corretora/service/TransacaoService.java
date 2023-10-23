@@ -103,7 +103,11 @@ public class TransacaoService {
         if(tipoTransacao == TipoTransacao.SAIDA){
         	
         	double total = -(intQuantidade) * acao.getPreco();
-            transacao.setTotalTransacao(total);
+        	if (this.getSaldo() - total < 0) {
+            	throw new AcaoInvalidaException("Saldo insuficiente para realizar a retirada");
+            } else {
+            	transacao.setTotalTransacao(total);
+            }
             
         } else if(tipoTransacao == TipoTransacao.ENTRADA){
         	

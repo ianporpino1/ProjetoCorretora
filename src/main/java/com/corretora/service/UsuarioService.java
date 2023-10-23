@@ -18,14 +18,18 @@ public class UsuarioService {
     }
 
     public Usuario configUser(UsuarioDTO userDTO) throws AcaoInvalidaException{
-    	if(this.findByUsername(userDTO.getUsername()) == null){
-
-    		String hashPassword = new BCryptPasswordEncoder().encode(userDTO.password);
+    	if(userDTO.getFirstName().isBlank() | userDTO.getUsername().isBlank() | userDTO.getPassword().isBlank()){
+    		
+    		throw new AcaoInvalidaException("Todos os campos obrigatórios devem ser preenchidos");
+    		
+    	} else if(this.findByUsername(userDTO.getUsername()) == null){
+    		
+    		throw new AcaoInvalidaException("Este username não está disponível");
+    		
+        } else {
+        	String hashPassword = new BCryptPasswordEncoder().encode(userDTO.password);
 
             return new Usuario(userDTO.firstName, userDTO.lastName, userDTO.username, hashPassword);
-
-        } else {
-        	throw new AcaoInvalidaException("Este username não está disponível");
         }
     }
 
