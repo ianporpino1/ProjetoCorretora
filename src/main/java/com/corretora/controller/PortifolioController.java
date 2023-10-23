@@ -29,9 +29,11 @@ public class PortifolioController {
 
        model.addAttribute("posicoesList", posicoesList);
        
-       model.addAttribute("saldo", transacaoService.getSaldo());
-
-       model.addAttribute("totalHoldings", totalHoldings);
+       String strSaldo = String.format("%.2f", transacaoService.getSaldo());
+       model.addAttribute("saldo", strSaldo);
+       
+       String strTotalHoldings = String.format("%.2f", totalHoldings);
+       model.addAttribute("totalHoldings", strTotalHoldings);
 
        return "portifolio";
     }

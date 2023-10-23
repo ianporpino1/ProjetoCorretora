@@ -122,6 +122,8 @@ public class TransacaoService {
             } else {
             	transacao.setTotalTransacao(total);
             }
+            
+            posicaoService.setPosicao(transacao);
        }
 
         this.checkPosicao(transacao);
