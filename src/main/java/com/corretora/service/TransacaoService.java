@@ -120,42 +120,51 @@ public class TransacaoService {
         transacao.setIdUsuario(userId);
         
         if(tipoTransacao == TipoTransacao.SAIDA){
-        	
-        	double total = -(intQuantidade) * acao.getPreco();
-        	if (this.getSaldo() - total < 0) {
-            	throw new AcaoInvalidaException("Saldo insuficiente para realizar a retirada");
-            } else {
-            	transacao.setTotalTransacao(total);
-            }
-            
+            setTransacaoSaida(transacao);
         } else if(tipoTransacao == TipoTransacao.ENTRADA){
-        	
-        	if (acao.getPreco() <= 0) {
-            	throw new AcaoInvalidaException("O deposito precisa ser maior que 0");
-            } else {
-            	transacao.setTotalTransacao(acao.getPreco());
-            }
-            
+            setTransacaoEntrada(transacao);
         } else if(tipoTransacao == TipoTransacao.VENDA){
-
-            double total = -(intQuantidade) * acao.getPreco();
-            transacao.setTotalTransacao(total);
-            this.checkPosicao(transacao);
-            
-        } else{
-            double total = intQuantidade * acao.getPreco();
-            
-            if (this.getSaldo() - total < 0) {
-            	throw new AcaoInvalidaException("Saldo insuficiente para realizar a compra");
-            } else {
-            	transacao.setTotalTransacao(total);
-            }
-
-            this.checkPosicao(transacao);
+            setTransacaoVenda(transacao);
+        } else if(tipoTransacao == TipoTransacao.COMPRA){
+            setTransacaoCompra(transacao);
        }
-
-
+        
         this.saveTransacao(transacao);
+    }
+
+    public void setTransacaoSaida(Transacao transacao) throws AcaoInvalidaException{
+        double total = -(transacao.getQuantidade()) * transacao.getAcao().getPreco();
+        if (this.getSaldo() - total < 0) {
+            throw new AcaoInvalidaException("Saldo insuficiente para realizar a retirada");
+        } else {
+            transacao.setTotalTransacao(total);
+        }
+    }
+
+    public void setTransacaoEntrada(Transacao transacao) throws AcaoInvalidaException{
+        if (transacao.getAcao().getPreco() <= 0) {
+            throw new AcaoInvalidaException("O deposito precisa ser maior que 0");
+        } else {
+            transacao.setTotalTransacao(transacao.getAcao().getPreco());
+        }
+    }
+
+    public void setTransacaoVenda(Transacao transacao) throws QuantidadeInvalidaException {
+        double total = -(transacao.getQuantidade()) * transacao.getAcao().getPreco();
+        transacao.setTotalTransacao(total);
+        this.checkPosicao(transacao);
+    }
+
+    public void setTransacaoCompra(Transacao transacao) throws AcaoInvalidaException, QuantidadeInvalidaException {
+        double total = transacao.getQuantidade() * transacao.getAcao().getPreco();
+
+        if (this.getSaldo() - total < 0) {
+            throw new AcaoInvalidaException("Saldo insuficiente para realizar a compra");
+        } else {
+            transacao.setTotalTransacao(total);
+        }
+
+        this.checkPosicao(transacao);
     }
 
 
